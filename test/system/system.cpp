@@ -10,14 +10,14 @@
 #include <base/System.h>
 
 void System_constructor(){
-    sys::base::System hardware;
-    hardware.setup();
-    TEST_ASSERT_FALSE(hardware.doReset())
-    hardware.loop();
-    hardware.requestReset();
-    TEST_ASSERT(hardware.doReset())
+    auto hardware = sys::base::System::getInstance();
+    hardware->setup();
+    TEST_ASSERT_FALSE(hardware->doReset())
+    hardware->loop();
+    hardware->requestReset();
+    TEST_ASSERT(hardware->doReset())
     class StringOutput: public sys::io::Output{};
-    hardware.pushOutput(StringOutput());
+    hardware->pushOutput(StringOutput());
 }
 
 void runTests(){

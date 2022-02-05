@@ -12,6 +12,8 @@
 
 namespace sys::base {
 
+std::shared_ptr<System> System::instance_{nullptr};
+
 void System::setup() {
     toReset = false;
     outputs.pushOutput(io::serialOutput);
@@ -26,6 +28,13 @@ void System::loop() {
 
 void System::pushOutput(io::Output&& newOutput) {
     outputs.pushOutput(newOutput);
+}
+
+std::shared_ptr<System> System::getInstance() {
+    if (instance_ == nullptr) {
+        instance_ = std::shared_ptr<System>(new System());
+    }
+    return instance_;
 }
 
 }// namespace sys::base

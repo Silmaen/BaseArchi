@@ -7,6 +7,7 @@
  */
 
 #pragma once
+#include <memory>
 #include "io/MultiOutput.h"
 
 /**
@@ -23,14 +24,20 @@ namespace sys::base {
  */
 class System {
 public:
-    /**
-     * @brief Default constructor.
-     */
-    System() = default;
+    System(const System& ) =delete;
+    System(System&& ) =delete;
+    System& operator=(const System& ) =delete;
+    System& operator=(System&& ) =delete;
     /**
      * @brief Destructor.
      */
     virtual ~System() = default;
+
+    /**
+     * @brief Access to system
+     * @return Pointer to System instance
+     */
+    static std::shared_ptr<System> getInstance();
 
     /**
      * @brief Access to system outputs
@@ -65,6 +72,13 @@ public:
      */
     void requestReset(){toReset=true;}
 private:
+    /**
+     * @brief Default constructor.
+     */
+    System() = default;
+
+    static std::shared_ptr<System> instance_;
+
     /// Console outputs
     io::MultiOutput outputs;
 

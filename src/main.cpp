@@ -10,23 +10,21 @@
 #endif
 #include <base/System.h>
 
-/// Hardware device
-sys::base::System hardware;
-
 /**
  * @brief Initialization function
  */
 void setup() {
-    hardware.setup();
+    sys::base::System::getInstance()->setup();
 }
 
 /**
  * @brief Iteration of the infinite loop
  */
 void loop() {
-    hardware.loop();
+    auto hardware = sys::base::System::getInstance();
+    hardware->loop();
 #ifdef ARDUINO
-    if (hardware.doReset())
+    if (hardware->doReset())
         setup();
 #endif
 }
@@ -38,7 +36,7 @@ void loop() {
  */
 int main(){
     setup();
-    while (!hardware.doReset()){
+    while (!sys::base::System::getInstance()->doReset()){
         loop();
     }
     return 0;
