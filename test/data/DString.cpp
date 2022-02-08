@@ -11,6 +11,7 @@
 
 void DString_constructor(){
     sys::data::DString test(F("coucou"));
+    TEST_ASSERT_FALSE(test.empty())
     TEST_ASSERT_EQUAL_STRING("coucou",test.string().c_str());
     sys::data::DString test2("coucou");
     TEST_ASSERT_EQUAL_STRING("coucou",test2.c_str());
@@ -22,12 +23,45 @@ void DString_constructor(){
     TEST_ASSERT(test2 == test4)
     sys::data::DString test5{test2};
     TEST_ASSERT(test2 == test5)
+    sys::data::DString test10;
+    TEST_ASSERT(test10.empty())
 }
 
 void DString_concatenation(){
     sys::data::DString test(F("coucou"));
+    TEST_ASSERT_EQUAL(6,test.size());
     TEST_ASSERT_EQUAL_STRING("coucou copain", (test + " copain").c_str());
     TEST_ASSERT_EQUAL_STRING("coucou/copain", (test / "copain").c_str());
+}
+
+void DString_Substringing(){
+    sys::data::DString test(F("coucou mon copain.\nTu vas bien mon pote?\n"));
+    TEST_ASSERT_EQUAL(41,test.size());
+    auto word = test.getFirstWord();
+    TEST_ASSERT_EQUAL(7, test.firstIndexOf("mon"));
+    TEST_ASSERT_EQUAL(31, test.lastIndexOf("mon"));
+    TEST_ASSERT_EQUAL(6,word.size());
+    auto line = test.getFirstLine();
+    TEST_ASSERT_EQUAL(19,line.size());
+    TEST_ASSERT_EQUAL_STRING("coucou", word.c_str());
+    TEST_ASSERT_EQUAL_STRING("coucou mon copain.\n", line.c_str());
+    test.removeFirstLine();
+    TEST_ASSERT_EQUAL_STRING("Tu vas bien mon pote?\n", test.c_str());
+}
+
+void DString_Substringing2(){
+    sys::data::DString test(F("coucou"));
+    test.removeFirstWord();
+    TEST_ASSERT(test.empty())
+    test = F("Coucou copain");
+    TEST_ASSERT(test.startsWith(F("Coucou")))
+    TEST_ASSERT(test.endsWith(F("copain")))
+    test.removeFirstLine();
+    TEST_ASSERT(test.empty())
+    test = F("Coucou copain");
+    test.removeFirstWord();
+    TEST_ASSERT_EQUAL_STRING("copain", test.c_str());
+
 }
 
 void DString_FloatNumber(){
@@ -224,5 +258,7 @@ void runTests(){
     RUN_TEST(DString_Int32Number);
     RUN_TEST(DString_Int64Number);
     RUN_TEST(DString_BadFormat);
+    RUN_TEST(DString_Substringing);
+    RUN_TEST(DString_Substringing2);
     UNITY_END();
 }

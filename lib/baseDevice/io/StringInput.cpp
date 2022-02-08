@@ -11,7 +11,10 @@
 namespace sys::io {
 
 data::DString StringInput::getLine() {
-    return Input::getLine();
+    data::DString result = buffer.getFirstLine();
+    data::DString::size_type lineIdx = buffer.firstIndexOf('\n');
+    buffer = buffer.substr(lineIdx+1,0);
+    return result;
 }
 
 void StringInput::flush() {
@@ -20,6 +23,9 @@ void StringInput::flush() {
 
 void StringInput::pushToBuffer(const data::DString& str) {
     buffer += str + F("\n");
+}
+bool StringInput::available() const {
+    return !buffer.empty();
 }
 
 

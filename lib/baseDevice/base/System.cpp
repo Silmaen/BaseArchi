@@ -37,4 +37,8 @@ std::shared_ptr<System> System::getInstance() {
     return instance_;
 }
 
+void System::pushInput(io::Input&& newInput) {
+    inputs.push_back(std::move(newInput));
+}
+
 }// namespace sys::base

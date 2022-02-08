@@ -48,13 +48,19 @@ class DString {
 public:
     /// Internal string's type
 #ifdef ARDUINO
-    using internal_str = String;
+    using internal_str              = String;
+    using iterator                  = char*;
+    using const_iterator            = const char*;
+    using size_type                 = int;
+    using diff_type                 = int;
+    static constexpr size_type npos = -1;
 #else
-    using internal_str   = std::string;
-    using iterator       = internal_str::iterator;
-    using const_iterator = internal_str::const_iterator;
-    using size_type      = internal_str::size_type;
-    using diff_type      = internal_str::difference_type;
+    using internal_str              = std::string;
+    using iterator                  = internal_str::iterator;
+    using const_iterator            = internal_str::const_iterator;
+    using size_type                 = internal_str::size_type;
+    using diff_type                 = internal_str::difference_type;
+    static constexpr size_type npos = internal_str::npos;
 #endif
 
     /**
@@ -184,7 +190,7 @@ public:
      * @brief Conversion to Constant char array
      * @return Constant char array
      */
-    [[nodiscard]] const char* c_str() const { return internal.c_str();}
+    [[nodiscard]] const char* c_str() const { return internal.c_str(); }
 
     /**
      * @brief Equality operator
@@ -240,12 +246,6 @@ public:
     [[nodiscard]] const_iterator begin() const { return internal.begin(); }
 
     /**
-     * @brief Begin constant iterator
-     * @return Begin constant iterator
-     */
-    [[nodiscard]] const_iterator cbegin() const { return internal.cbegin(); }
-
-    /**
      * @brief End iterator
      * @return End iterator
      */
@@ -256,12 +256,6 @@ public:
      * @return End constant iterator
      */
     [[nodiscard]] const_iterator end() const { return internal.end(); }
-
-    /**
-     * @brief End constant iterator
-     * @return End constant iterator
-     */
-    [[nodiscard]] const_iterator cend() const { return internal.cend(); }
 
     /**
      * @brief Check if the string begins with the given pattern
@@ -278,6 +272,18 @@ public:
     [[nodiscard]] bool endsWith(const DString& pattern) const;
 
     /**
+     * @brief Get the size of the string
+     * @return Size of the string
+     */
+    [[nodiscard]] size_type size() const {
+#ifdef ARDUINO
+        return internal.length();
+#else
+        return internal.size();
+#endif
+    }
+
+    /**
      * @brief Get the first word of the string
      * @return The first word
      */
@@ -290,18 +296,27 @@ public:
     [[nodiscard]] DString getFirstLine() const;
 
     /**
+     * @brief Cut the first word of the string
+     */
+    void removeFirstWord();
+
+    /**
+     * @brief Cut the first line of the string
+     */
+    void removeFirstLine();
+    /**
      * @brief Get the index of the first occurrence of a pattern
      * @param pattern The pattern to check
      * @return The index
      */
-    [[nodiscard]] size_type firstIndexOf(const DString& pattern)const;
+    [[nodiscard]] size_type firstIndexOf(const DString& pattern) const;
 
     /**
      * @brief Get the index of the last occurrence of a pattern
      * @param pattern The pattern to check
      * @return The index
      */
-    [[nodiscard]] size_type lastIndexOf(const DString& pattern)const;
+    [[nodiscard]] size_type lastIndexOf(const DString& pattern) const;
 
     /**
      * @brief Get a sub string
@@ -309,7 +324,7 @@ public:
      * @param length The length to extract (0 mean until the end)
      * @return The sub string
      */
-    [[nodiscard]] DString substr(size_type startIndex, size_type length) const { return substr(begin() + static_cast<diff_type>(startIndex), length); }
+    [[nodiscard]] DString substr(size_type startIndex, size_type length = 0) const { return substr(begin() + static_cast<diff_type>(startIndex), length); }
 
     /**
      * @brief Get a sub string
@@ -317,8 +332,19 @@ public:
      * @param length The length to extract (0 mean until the end)
      * @return The sub string
      */
-    [[nodiscard]] DString substr(const_iterator start, size_type length) const;
+    [[nodiscard]] DString substr(const_iterator start, size_type length = 0) const;
 
+    /**
+     * @brief Check the emptiness of the string
+     * @return True if empty string
+     */
+    [[nodiscard]] bool empty() const {
+#ifdef ARDUINO
+        return internal.isEmpty();
+#else
+        return internal.empty();
+#endif
+    }
 
 private:
     /// Internal string object

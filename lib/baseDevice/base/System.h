@@ -9,6 +9,7 @@
 #pragma once
 #include <memory>
 #include "io/MultiOutput.h"
+#include "io/Input.h"
 
 /**
  * @namespace sys
@@ -50,6 +51,11 @@ public:
      * @param newOutput The output to add
      */
     void pushOutput(io::Output&& newOutput);
+    /**
+     * @brief Add an input to the list
+     * @param newInput The input to add
+     */
+    void pushInput(io::Input&& newInput);
 
     /**
      * @brief Initial setup
@@ -81,6 +87,10 @@ private:
 
     /// Console outputs
     io::MultiOutput outputs;
+
+    using Inputs = std::vector<io::Input>;
+
+    Inputs inputs;
 
     /// If the device need reset
     bool toReset = false;

@@ -233,32 +233,80 @@ void DString::fromStr(std::string&& str) {
 #endif
 }
 
-bool DString::startsWith([[maybe_unused]]const DString& pattern) const {
-    return false;
+bool DString::startsWith([[maybe_unused]] const DString& pattern) const {
+#ifdef ARDUINO
+    return internal.startsWith(pattern.c_str());
+#else
+    return internal.rfind(pattern.c_str(), 0) == 0;
+#endif
 }
 
-bool DString::endsWith([[maybe_unused]]const DString& pattern) const {
-    return false;
+bool DString::endsWith([[maybe_unused]] const DString& pattern) const {
+#ifdef ARDUINO
+    return internal.endsWith(pattern.c_str());
+#else
+    return internal.rfind(pattern.c_str()) == internal.size() - pattern.size();
+#endif
 }
 
 DString DString::getFirstWord() const {
-    return {};
+    return substr(0, firstIndexOf(F(" ")));
 }
 
 DString DString::getFirstLine() const {
-    return {};
+    auto fin = firstIndexOf(F("\n"));
+    if (fin != npos)
+        ++fin;
+    return substr(0, fin);
 }
 
-DString::size_type DString::firstIndexOf([[maybe_unused]]const DString& pattern) const {
-    return 0;
+DString::size_type DString::firstIndexOf(const DString& pattern) const {
+#ifdef ARDUINO
+    return internal.indexOf(pattern.c_str());
+#else
+    return internal.find(pattern.c_str());
+#endif
 }
 
-DString::size_type DString::lastIndexOf([[maybe_unused]]const DString& pattern) const {
-    return 0;
+DString::size_type DString::lastIndexOf(const DString& pattern) const {
+#ifdef ARDUINO
+    return internal.lastIndexOf(pattern.c_str());
+#else
+    return internal.rfind(pattern.c_str());
+#endif
 }
 
-DString DString::substr([[maybe_unused]]DString::const_iterator start, [[maybe_unused]]DString::size_type length) const {
-    return {};
+DString DString::substr(DString::const_iterator start, DString::size_type length) const {
+    unsigned int index = start - internal.begin();
+#ifdef ARDUINO
+    if (length == 0) {
+        return internal.substring(index);
+    }
+    return internal.substring(index, index + length);
+#else
+    if (length == 0) {
+        return internal.substr(index);
+    }
+    return internal.substr(index, index + length);
+#endif
+}
+
+void DString::removeFirstWord() {
+    auto index = firstIndexOf(F(" "));
+    if (index == npos) {
+        internal = internal_str{};
+        return;
+    }
+    internal = substr(index+1).c_str();
+}
+
+void DString::removeFirstLine() {
+    auto index = firstIndexOf(F("\n"));
+    if (index == npos) {
+        internal = internal_str{};
+        return;
+    }
+    internal = substr(index+1).c_str();
 }
 
 

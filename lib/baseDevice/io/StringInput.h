@@ -10,7 +10,7 @@
 
 namespace sys::io {
 /**
- * @brief Class StringInput
+ * @brief base classe of input dedicated to debug
  */
 class StringInput : Input {
 public:
