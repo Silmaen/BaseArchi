@@ -46,20 +46,32 @@ enum struct FloatFormat {
  */
 class DString {
 public:
-    /// Internal string's type
+
 #ifdef ARDUINO
+    /// Internal string's type
     using internal_str              = String;
+    /// Internal string's iterator
     using iterator                  = char*;
+    /// Internal string's const iterator
     using const_iterator            = const char*;
+    /// Internal string's size type
     using size_type                 = int;
+    /// Internal string's size difference type
     using diff_type                 = int;
+    /// Internal string's no position
     static constexpr size_type npos = -1;
 #else
+    /// Internal string's type
     using internal_str              = std::string;
+    /// Internal string's iterator
     using iterator                  = internal_str::iterator;
+    /// Internal string's const iterator
     using const_iterator            = internal_str::const_iterator;
+    /// Internal string's size type
     using size_type                 = internal_str::size_type;
+    /// Internal string's size difference type
     using diff_type                 = internal_str::difference_type;
+    /// Internal string's no position
     static constexpr size_type npos = internal_str::npos;
 #endif
 

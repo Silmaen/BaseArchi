@@ -7,13 +7,12 @@
  */
 
 #include "StringInput.h"
-
+#include <iostream>
 namespace sys::io {
 
 data::DString StringInput::getLine() {
     data::DString result = buffer.getFirstLine();
-    data::DString::size_type lineIdx = buffer.firstIndexOf('\n');
-    buffer = buffer.substr(lineIdx+1,0);
+    buffer.removeFirstLine();
     return result;
 }
 
@@ -22,7 +21,7 @@ void StringInput::flush() {
 }
 
 void StringInput::pushToBuffer(const data::DString& str) {
-    buffer += str + F("\n");
+    buffer += str;
 }
 bool StringInput::available() const {
     return !buffer.empty();

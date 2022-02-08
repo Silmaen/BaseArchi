@@ -7,9 +7,9 @@
  */
 
 #pragma once
-#include <memory>
-#include "io/MultiOutput.h"
 #include "io/Input.h"
+#include "io/MultiOutput.h"
+#include <memory>
 
 /**
  * @namespace sys
@@ -25,14 +25,14 @@ namespace sys::base {
  */
 class System {
 public:
-    System(const System& ) =delete;
-    System(System&& ) =delete;
-    System& operator=(const System& ) =delete;
-    System& operator=(System&& ) =delete;
+    System(const System&) = delete;
+    System(System&&)      = delete;
+    System& operator=(const System&) = delete;
+    System& operator=(System&&) = delete;
     /**
      * @brief Destructor.
      */
-    virtual ~System() = default;
+    virtual ~System() = default;//---UNCOVER---
 
     /**
      * @brief Access to system
@@ -41,22 +41,35 @@ public:
     static std::shared_ptr<System> getInstance();
 
     /**
+     * @brief Add an output to the list
+     * @param newOutput The output to add
+     */
+    void pushOutput(const std::shared_ptr<io::Output>& newOutput);
+
+    /**
      * @brief Access to system outputs
      * @return
      */
     [[nodiscard]] const io::MultiOutput& getOutput() const { return outputs; }
 
     /**
-     * @brief Add an output to the list
-     * @param newOutput The output to add
-     */
-    void pushOutput(io::Output&& newOutput);
-    /**
      * @brief Add an input to the list
      * @param newInput The input to add
      */
-    void pushInput(io::Input&& newInput);
+    void pushInput(const std::shared_ptr<io::Input>& newInput);
 
+    /**
+     * @brief Get an input by its name
+     * @param inputName The name of the input
+     * @return Pointer to the input, nullptr if not exists
+     */
+    std::shared_ptr<io::Input> getInput(const data::DString& inputName);
+    /**
+     * @brief Get a specific output by its name
+     * @param outputName The name of the output
+     * @return Pointer to the input, nullptr if not exists
+     */
+    std::shared_ptr<io::Output> getOutput(const data::DString& outputName);
     /**
      * @brief Initial setup
      */
@@ -71,12 +84,13 @@ public:
      * @brief Should the device reset?
      * @return True if reset required
      */
-    [[nodiscard]] bool doReset() const{return toReset;}
+    [[nodiscard]] bool doReset() const { return toReset; }
 
     /**
      * @brief Send a reset notification
      */
-    void requestReset(){toReset=true;}
+    void requestReset() { toReset = true; }
+
 private:
     /**
      * @brief Default constructor.
@@ -88,7 +102,7 @@ private:
     /// Console outputs
     io::MultiOutput outputs;
 
-    using Inputs = std::vector<io::Input>;
+    using Inputs = std::vector<std::shared_ptr<io::Input>>;
 
     Inputs inputs;
 

@@ -6,21 +6,18 @@
  * All modification must get authorization from the author.
  */
 
+#include <algorithm>
 #include "MultiOutput.h"
 
 namespace sys::io {
 
 void MultiOutput::print(const sys::data::DString& str) {
     for (auto& out : outputs) {
-        out.print(str);
+        out->print(str);
     }
 }
 
-void MultiOutput::pushOutput(const sys::io::Output& output) {
-    outputs.push_back(output);
-}
-
-void MultiOutput::pushOutput(Output&& output) {
+void MultiOutput::pushOutput(const std::shared_ptr<sys::io::Output>& output) {
     outputs.push_back(output);
 }
 

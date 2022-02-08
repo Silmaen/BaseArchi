@@ -41,30 +41,31 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~Input() = default;
+    virtual ~Input() = default;//---UNCOVER---
 
     /**
      * @brief Check for incoming data
      * @return True if data available
      */
-    [[nodiscard]] virtual bool available()const{return false;};
+    [[nodiscard]] virtual bool available() const = 0;//---UNCOVER---
 
     /**
      * @brief Read Input until next end of line
      * @return The read line
      */
-    virtual data::DString getLine() {return {};};
+    virtual data::DString getLine() = 0;//---UNCOVER---
 
     /**
      * @brief Get the input name
      * @return the input name
      */
-    [[nodiscard]] virtual data::DString getName()const {return F("unknown");};
+    [[nodiscard]] virtual data::DString getName() const = 0;//---UNCOVER---
 
     /**
      * @brief Empty the input buffer
      */
-    virtual void flush(){}
+    virtual void flush() = 0;//---UNCOVER---
+
 private:
 };
 

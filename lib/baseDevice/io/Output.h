@@ -45,19 +45,26 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~Output() = default;
+    virtual ~Output() = default;//---UNCOVER---
 
-     /**
+    /**
       * @brief Output a string
       * @param str The string to output
       */
-    virtual void print([[maybe_unused]]const data::DString& str){ };
+    virtual void print([[maybe_unused]] const data::DString& str) = 0;//---UNCOVER---
 
     /**
      * @brief Output a string with end line
      * @param str The string to output
      */
     void println(const data::DString& str);
+
+    /**
+     * @brief Get the name of the output
+     * @return The name of the output
+     */
+    [[nodiscard]] virtual data::DString getName() const = 0; //---UNCOVER---
+
 private:
 };
 

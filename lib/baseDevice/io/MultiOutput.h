@@ -9,6 +9,7 @@
 #pragma once
 #include "Output.h"
 #include <vector>
+#include <memory>
 
 namespace sys::io {
 
@@ -17,6 +18,11 @@ namespace sys::io {
  */
 class MultiOutput: public Output {
 public:
+    /// List of outputs
+    using Outputs = std::vector<std::shared_ptr<Output>>;
+    /// Iterator to outputs
+    using iterator = Outputs::iterator;
+
     MultiOutput(const MultiOutput&) = delete;
     MultiOutput(MultiOutput&&) = delete;
     MultiOutput& operator=(const MultiOutput&) = delete;
@@ -28,7 +34,7 @@ public:
     /**
      * @brief Destructor.
      */
-    ~MultiOutput() override = default;
+    ~MultiOutput() override = default;//---UNCOVER---
 
     void print(const data::DString& str) override;
 
@@ -36,15 +42,25 @@ public:
      * @brief Add output to the list
      * @param output The output to add
      */
-    void pushOutput(const Output& output);
+    void pushOutput(const std::shared_ptr<Output>& output);
 
     /**
-     * @brief Add output to the list
-     * @param output The output to add
+     * @brief Get the name of the output
+     * @return The name of the output
      */
-    void pushOutput(Output&& output);
+    [[nodiscard]] data::DString getName()const override{return F("Multi");}//---UNCOVER---
+
+    /**
+     * @brief Begin iterator
+     * @return Iterator to the first output
+     */
+    iterator begin(){return outputs.begin();}
+    /**
+     * @brief Begin iterator
+     * @return Iterator to the first output
+     */
+    iterator end(){return outputs.end();}
 private:
-    using Outputs = std::vector<Output>;
     /// List of outputs
     Outputs outputs;
 };

@@ -21,12 +21,35 @@ public:
      */
     SerialOutput() = default;
     /**
+     * @brief Default copy constructor
+     */
+    SerialOutput(const SerialOutput&) = default;
+    /**
+     * @brief Default move constructor
+     */
+    SerialOutput(SerialOutput&&) = default;
+    /**
+     * @brief Default copy assignation
+     * @return this
+     */
+    SerialOutput& operator=(const SerialOutput&) = default;
+    /**
+     * @brief Default move assignation
+     * @return this
+     */
+    SerialOutput& operator=(SerialOutput&&) = default;
+    /**
      * @brief Destructor.
      */
-    virtual ~SerialOutput() = default;
+    ~SerialOutput() override = default;//---UNCOVER---
 
 
     void print(const data::DString& str) override;
+    /**
+     * @brief Get the name of the output
+     * @return The name of the output
+     */
+    [[nodiscard]] data::DString getName()const override{return F("Serial");}
 private:
 };
 

@@ -12,7 +12,7 @@ namespace sys::io {
 /**
  * @brief base classe of input dedicated to debug
  */
-class StringInput : Input {
+class StringInput : public Input {
 public:
     /**
      * @brief Default constructor.
@@ -39,7 +39,7 @@ public:
     /**
      * @brief Destructor.
      */
-    ~StringInput() override = default;
+    ~StringInput() override = default;//---UNCOVER---
 
     /**
      * @brief Check for incoming data
@@ -51,13 +51,13 @@ public:
      * @brief Read Input until next end of line
      * @return The read line
      */
-    virtual data::DString getLine() override;
+    data::DString getLine() override;
 
     /**
      * @brief Get the input name
      * @return the input name
      */
-    [[nodiscard]] data::DString getName() const override { return F("string"); };
+    [[nodiscard]] data::DString getName() const override { return F("String"); };
 
     /**
      * @brief Empty the input buffer
