@@ -9,8 +9,9 @@
 #pragma once
 #include "io/Input.h"
 #include "io/MultiOutput.h"
+#ifdef USR_STL
 #include <memory>
-
+#endif
 /**
  * @namespace sys
  * @brief Namespace for architecture project
@@ -29,6 +30,15 @@ public:
     System(System&&)      = delete;
     System& operator=(const System&) = delete;
     System& operator=(System&&) = delete;
+
+#ifdef HAS_SMART_PTR
+    using system_ptr = std::shared_ptr<System>;
+    using input_ptr = std::shared_ptr<io::Input>;
+#else
+    using system_ptr = System*;
+    using input_ptr = io::Input*;
+#endif
+
     /**
      * @brief Destructor.
      */
@@ -38,13 +48,14 @@ public:
      * @brief Access to system
      * @return Pointer to System instance
      */
-    static std::shared_ptr<System> getInstance();
+    static system_ptr getInstance();
 
     /**
      * @brief Add an output to the list
      * @param newOutput The output to add
      */
-    void pushOutput(const std::shared_ptr<io::Output>& newOutput);
+
+    void pushOutput(const io::MultiOutput::item_type& newOutput);
 
     /**
      * @brief Access to system outputs
@@ -56,20 +67,20 @@ public:
      * @brief Add an input to the list
      * @param newInput The input to add
      */
-    void pushInput(const std::shared_ptr<io::Input>& newInput);
+    void pushInput(const input_ptr& newInput);
 
     /**
      * @brief Get an input by its name
      * @param inputName The name of the input
      * @return Pointer to the input, nullptr if not exists
      */
-    std::shared_ptr<io::Input> getInput(const data::DString& inputName);
+    input_ptr getInput(const data::DString& inputName);
     /**
      * @brief Get a specific output by its name
      * @param outputName The name of the output
      * @return Pointer to the input, nullptr if not exists
      */
-    std::shared_ptr<io::Output> getOutput(const data::DString& outputName);
+    io::MultiOutput::item_type getOutput(const data::DString& outputName);
     /**
      * @brief Initial setup
      */
@@ -97,12 +108,12 @@ private:
      */
     System() = default;
 
-    static std::shared_ptr<System> instance_;
+    static system_ptr instance_;
 
     /// Console outputs
     io::MultiOutput outputs;
 
-    using Inputs = std::vector<std::shared_ptr<io::Input>>;
+    using Inputs = std::vector<input_ptr>;
 
     Inputs inputs;
 

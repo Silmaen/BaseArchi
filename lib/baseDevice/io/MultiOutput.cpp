@@ -17,7 +17,7 @@ void MultiOutput::print(const sys::data::DString& str) {
     }
 }
 
-void MultiOutput::pushOutput(const std::shared_ptr<sys::io::Output>& output) {
+void MultiOutput::pushOutput(const item_type& output) {
     outputs.push_back(output);
 }
 

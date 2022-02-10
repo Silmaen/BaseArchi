@@ -13,11 +13,15 @@
 
 namespace sys::base {
 
-std::shared_ptr<System> System::instance_{nullptr};
+System::system_ptr System::instance_{nullptr};
 
 void System::setup() {
     toReset = false;
+#ifdef HAS_SMART_PTR
     outputs.pushOutput(std::shared_ptr<io::Output>(new io::SerialOutput()));
+#else
+    outputs.pushOutput(new io::SerialOutput());
+#endif
 }
 
 void System::loop() {
@@ -29,31 +33,35 @@ void System::loop() {
     }
 }
 
-void System::pushOutput(const std::shared_ptr<io::Output>& newOutput) {
+void System::pushOutput(const io::MultiOutput::item_type& newOutput) {
     outputs.pushOutput(newOutput);
 }
 
-std::shared_ptr<System> System::getInstance() {
+System::system_ptr System::getInstance() {
     if (instance_ == nullptr) {
+#ifdef HAS_SMART_PTR
         instance_ = std::shared_ptr<System>(new System());
+#else
+        instance_ = new System();
+#endif
     }
     return instance_;
 }
 
-void System::pushInput(const std::shared_ptr<io::Input>& newInput) {
+void System::pushInput(const input_ptr& newInput) {
     inputs.push_back(newInput);
 }
 
-std::shared_ptr<io::Input> System::getInput(const data::DString& inputName) {
+System::input_ptr System::getInput(const data::DString& inputName) {
     auto result = std::find_if(inputs.begin(), inputs.end(),
-                               [&inputName](const auto& out) { return out->getName() == inputName; });
+                               [&inputName](const input_ptr& out) { return out->getName() == inputName; });
     if (result == inputs.end())
         return nullptr;
     return *result;
 }
-std::shared_ptr<io::Output> System::getOutput(const data::DString& outputName) {
+io::MultiOutput::item_type System::getOutput(const data::DString& outputName) {
     auto result = std::find_if(outputs.begin(), outputs.end(),
-                               [&outputName](const auto& out) { return out->getName() == outputName; });
+                               [&outputName](const io::MultiOutput::item_type& out) { return out->getName() == outputName; });
     if (result == outputs.end())
         return nullptr;
     return *result;

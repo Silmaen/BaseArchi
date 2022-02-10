@@ -16,8 +16,13 @@ void System_constructor(){
     TEST_ASSERT_NOT_NULL(hardware);
     hardware->setup();
     TEST_ASSERT_FALSE(hardware->doReset())
+#ifdef HAS_SMART_PTR
     hardware->pushOutput(std::shared_ptr<sys::io::Output>(new sys::io::StringOutput()));
     hardware->pushInput(std::shared_ptr<sys::io::Input>(new sys::io::StringInput()));
+#else
+    hardware->pushOutput(new sys::io::StringOutput());
+    hardware->pushInput(new sys::io::StringInput());
+#endif
     hardware->loop();
     hardware->requestReset();
     TEST_ASSERT(hardware->doReset())
@@ -31,13 +36,21 @@ void System_echo(){
     // get string input
     auto inputTemp = hardware->getInput(F("String"));
     TEST_ASSERT_NOT_NULL(inputTemp);
+#ifdef HAS_SMART_PTR
     auto input = std::static_pointer_cast<sys::io::StringInput>(inputTemp);
+#else
+    auto input = static_cast<sys::io::StringInput*>(inputTemp);
+#endif
     TEST_ASSERT_NOT_NULL(input);
     input->flush();
     // get string output
     auto outputTemp = hardware->getOutput(F("String"));
     TEST_ASSERT_NOT_NULL(outputTemp);
+#ifdef HAS_SMART_PTR
     auto output = std::static_pointer_cast<sys::io::StringOutput>(outputTemp);
+#else
+    auto output = static_cast<sys::io::StringOutput*>(outputTemp);
+#endif
     TEST_ASSERT_NOT_NULL(output);
 
     // push a message into input

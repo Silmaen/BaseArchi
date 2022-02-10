@@ -18,8 +18,14 @@ namespace sys::io {
  */
 class MultiOutput: public Output {
 public:
+    /// Item's type
+#ifdef HAS_SMART_PTR
+    using item_type = std::shared_ptr<Output>;
+#else
+    using item_type = Output*;
+#endif
     /// List of outputs
-    using Outputs = std::vector<std::shared_ptr<Output>>;
+    using Outputs = std::vector<item_type>;
     /// Iterator to outputs
     using iterator = Outputs::iterator;
 
@@ -42,7 +48,7 @@ public:
      * @brief Add output to the list
      * @param output The output to add
      */
-    void pushOutput(const std::shared_ptr<Output>& output);
+    void pushOutput(const item_type& output);
 
     /**
      * @brief Get the name of the output

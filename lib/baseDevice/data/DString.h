@@ -10,7 +10,13 @@
 
 #include <string>
 #ifdef ARDUINO
+#ifdef ARDUINO_ARCH_SAMD
+#include <api/String.h>
+#undef F
+#define F(X) X
+#else
 #include <WString.h>
+#endif
 #else
 /// Macro normally used to define flash string
 #define F(X) X
@@ -46,31 +52,34 @@ enum struct FloatFormat {
  */
 class DString {
 public:
-
 #ifdef ARDUINO
     /// Internal string's type
-    using internal_str              = String;
+#ifdef ARDUINO_ARCH_SAMD
+    using internal_str = arduino::String;
+#else
+    using internal_str = String;
+#endif
     /// Internal string's iterator
-    using iterator                  = char*;
+    using iterator = char*;
     /// Internal string's const iterator
-    using const_iterator            = const char*;
+    using const_iterator = const char*;
     /// Internal string's size type
-    using size_type                 = int;
+    using size_type = int;
     /// Internal string's size difference type
-    using diff_type                 = int;
+    using diff_type = int;
     /// Internal string's no position
     static constexpr size_type npos = -1;
 #else
     /// Internal string's type
-    using internal_str              = std::string;
+    using internal_str = std::string;
     /// Internal string's iterator
-    using iterator                  = internal_str::iterator;
+    using iterator = internal_str::iterator;
     /// Internal string's const iterator
-    using const_iterator            = internal_str::const_iterator;
+    using const_iterator = internal_str::const_iterator;
     /// Internal string's size type
-    using size_type                 = internal_str::size_type;
+    using size_type = internal_str::size_type;
     /// Internal string's size difference type
-    using diff_type                 = internal_str::difference_type;
+    using diff_type = internal_str::difference_type;
     /// Internal string's no position
     static constexpr size_type npos = internal_str::npos;
 #endif
@@ -125,8 +134,13 @@ public:
      * @brief Copy constructor
      * @param str The String to copy
      */
+#ifdef ARDUINO_ARCH_SAMD
+    DString(const arduino::__FlashStringHelper* str) :
+#else
     DString(const __FlashStringHelper* str) :
-        internal{str} {}
+#endif
+        internal{str} {
+    }
 #endif
     /**
      * @brief Constructor form int number with formatting
@@ -352,7 +366,11 @@ public:
      */
     [[nodiscard]] bool empty() const {
 #ifdef ARDUINO
+#ifdef ESP8266
         return internal.isEmpty();
+#else
+        return internal.length() == 0;
+#endif
 #else
         return internal.empty();
 #endif
@@ -367,6 +385,14 @@ private:
      * @param str Standard string
      */
     void fromStr(std::string&& str);
+
+    char* getData(){
+#ifdef ARDUINO
+        return internal.begin();
+#else
+        return internal.data();
+#endif
+    }
 };
 
 }// namespace sys::data

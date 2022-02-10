@@ -11,6 +11,12 @@
 #ifdef ESP8266
 #include <core_esp8266_features.h>
 #endif
+#ifdef ARDUINO_ARCH_SAMD
+#include <api/Common.h>
+#endif
+#ifdef ARDUINO_ARCH_AVR
+#include <Arduino.h>
+#endif
 #else
 #include <chrono>
 
@@ -44,7 +50,11 @@ uint32_t micros() {
 
 uint64_t micros64() {
 #ifdef ARDUINO
+#ifdef ESP8266
     return ::micros64();
+#else
+    return ::micros();
+#endif
 #else
     return duration_cast<microseconds>(sysClock::now() - startPoint).count();
 #endif
