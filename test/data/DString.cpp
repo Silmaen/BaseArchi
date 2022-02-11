@@ -9,6 +9,11 @@
 #include "data/DString.h"
 #include "../testBase.h"
 
+#ifdef PERF_TEST
+#include <chrono>
+#include <iostream>
+#endif
+
 void DString_constructor() {
     sys::data::DString test(F("coucou"));
     TEST_ASSERT_FALSE(test.empty())
@@ -105,8 +110,8 @@ void DString_FloatNumber() {
     test = sys::data::DString(0.000002659F);
     TEST_ASSERT_EQUAL_STRING("2.659e-06", test.c_str());
 
-    test = sys::data::DString(31.2659F, sys::data::FloatFormat::Decimal);
-    TEST_ASSERT_EQUAL_STRING("31.27", test.c_str());
+    test = sys::data::DString(-31.2659F, sys::data::FloatFormat::Decimal);
+    TEST_ASSERT_EQUAL_STRING("-31.27", test.c_str());
     test = sys::data::DString(89234.265F, sys::data::FloatFormat::Decimal);
 #ifdef ARDUINO_ARCH_AVR
     TEST_ASSERT_EQUAL_STRING("89234.28", test.c_str());
@@ -191,7 +196,7 @@ void DString_Int32Number() {
     test = sys::data::DString(testInt, sys::data::IntFormat::Binary);
     TEST_ASSERT_EQUAL_STRING("00000000000000000000000010111010", test.c_str());
     test = sys::data::DString(testInt, sys::data::IntFormat::Octal);
-    TEST_ASSERT_EQUAL_STRING("000000000272", test.c_str());
+    TEST_ASSERT_EQUAL_STRING("00000000272", test.c_str());
     test = sys::data::DString(testInt, sys::data::IntFormat::Decimal);
     TEST_ASSERT_EQUAL_STRING("186", test.c_str());
     test = sys::data::DString(testInt, sys::data::IntFormat::Hexadecimal);
@@ -204,7 +209,7 @@ void DString_Int32Number() {
     sTest = sys::data::DString(sTestInt, sys::data::IntFormat::Binary);
     TEST_ASSERT_EQUAL_STRING("11111111111111111111111111100101", sTest.c_str());
     sTest = sys::data::DString(sTestInt, sys::data::IntFormat::Octal);
-    TEST_ASSERT_EQUAL_STRING("037777777745", sTest.c_str());
+    TEST_ASSERT_EQUAL_STRING("37777777745", sTest.c_str());
     sTest = sys::data::DString(sTestInt, sys::data::IntFormat::Decimal);
     TEST_ASSERT_EQUAL_STRING("-27", sTest.c_str());
     sTest = sys::data::DString(sTestInt, sys::data::IntFormat::Hexadecimal);
@@ -276,4 +281,23 @@ void runTests() {
     RUN_TEST(DString_Substringing);
     RUN_TEST(DString_Substringing2);
     UNITY_END();
+#ifdef PERF_TEST
+    using clock = std::chrono::high_resolution_clock;
+    auto start  = clock::now();
+    for (uint32_t num = 0; num < 10000; ++num) {
+        DString_FloatNumber();
+        DString_Int8Number();
+        DString_Int16Number();
+        DString_Int32Number();
+        DString_Int64Number();
+    }
+    auto diff = clock::now() - start;
+    std::cout << " exec time (";
+#ifdef USE_FMT
+    std::cout << " FMT) : ";
+#else
+    std::cout << " INTERNAL) : ";
+#endif
+    std::cout << std::chrono::duration_cast<std::chrono::microseconds>(diff).count()/1000.0 << " ms " << std::endl;
+#endif
 }

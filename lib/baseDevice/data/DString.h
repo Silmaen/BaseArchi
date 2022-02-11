@@ -379,20 +379,6 @@ public:
 private:
     /// Internal string object
     internal_str internal;
-
-    /**
-     * @brief Conversion from standard string
-     * @param str Standard string
-     */
-    void fromStr(std::string&& str);
-
-    char* getData(){
-#ifdef ARDUINO
-        return internal.begin();
-#else
-        return internal.data();
-#endif
-    }
 };
 
 }// namespace sys::data

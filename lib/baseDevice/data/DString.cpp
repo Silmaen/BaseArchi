@@ -7,20 +7,15 @@
  */
 
 #include "DString.h"
-
-#ifdef USE_FMT
-#include <fmt/core.h>
-#else
-#include <math.h>
-#endif
-
-
+#include "math/functions.h"
+#include <iostream>
 namespace sys::data {
 
-#ifndef USE_FMT
 constexpr char digits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-void binary(DString::internal_str& buffer, uint64_t number, uint8_t bits) {
+template<class T>
+void binary(DString::internal_str& buffer, T number) {
+    uint8_t bits  = 8 * sizeof(T);
     uint64_t mask = 1ULL << (bits - 1);
     for (uint8_t index = 0; index < bits; ++index) {
         buffer += (number & mask) ? '1' : '0';
@@ -28,28 +23,39 @@ void binary(DString::internal_str& buffer, uint64_t number, uint8_t bits) {
     }
 }
 
-void octal(DString::internal_str& buffer, uint64_t number, uint8_t bits, uint64_t bigMask) {
-    constexpr uint8_t mask = 0b111;
+template<class T>
+void octal(DString::internal_str& buffer, T number) {
+    constexpr uint8_t mask    = 0b111;
+    constexpr uint8_t bitc = math::bitCount<T>();
+    constexpr uint8_t bits = bitc / 3 + 1;
+    T bigMask                 = 1;
+    for (uint8_t iter = 0; iter < bitc; ++iter) {
+        bigMask <<= 1;
+        bigMask |= 1;
+    }
     number &= bigMask;
     for (uint8_t index = 0; index < bits; ++index) {
         buffer += digits[(number >> (3 * (bits - index - 1))) & mask];
     }
 }
 
-void hexadecimal(DString::internal_str& buffer, int64_t number, uint8_t bits) {
-    constexpr uint8_t mask  = 0b1111;
+template<class T>
+void hexadecimal(DString::internal_str& buffer, T number) {
+    uint8_t bits           = 2 * sizeof(T);
+    constexpr uint8_t mask = 0b1111;
     for (uint8_t index = 0; index < bits; ++index) {
         buffer += digits[(number >> (4 * (bits - index - 1))) & mask];
     }
 }
 
-void decimal(DString::internal_str& buffer, int64_t number) {
+template<class T>
+void decimal(DString::internal_str& buffer, T number) {
     if (number < 0) {
         buffer += '-';
         number *= -1;
     }
-    int l10    = log10(number);
-    double p10 = pow(10, l10);
+    uint8_t l10 = math::log10(number);
+    double p10  = math::pow10<double>(l10);
     for (uint8_t i_dig = 0; i_dig <= l10; i_dig++) {
         uint8_t ddd = number / p10;
         number -= ddd * p10;
@@ -59,38 +65,24 @@ void decimal(DString::internal_str& buffer, int64_t number) {
 }
 
 template<class T>
-T round(T number, uint8_t decimals) {
-    T p10 = pow(10, decimals);
-    T res = floor(p10 * number);
-    if (p10 * number - res > 0.5)
-        return (res + 1) / p10;
-    return res / p10;
-}
-
-template<class T>
-inline T myabs(T val){
-    return val>0?val:-val;
-}
-
-template<class T>
 void decimal(DString::internal_str& buffer, T number, uint8_t decimals) {
     if (number < 0) {
         buffer += '-';
         number *= -1;
     }
     if (decimals == 255) {
-        for (uint8_t decim = 1; decim < 15; decim++) {
-            if (myabs(number - round<T>(number, decim)) * pow(10, decim) < 0.09) {
-                decimals = decim;
+        for (uint8_t dec = 1; dec < 15; dec++) {
+            if (math::abs(number - math::round<T>(number, dec)) * math::pow10<T>(dec) < 0.09) {
+                decimals = dec;
                 break;
             }
         }
     } else {
-        number = round<T>(number, decimals);
+        number = math::round<T>(number, decimals);
     }
-    int l10 = log10(number);
+    int l10 = math::log10(number);
     if (l10 > 0) {
-        T p10 = pow(10, l10);
+        T p10 = math::pow10<T>(l10);
         for (uint8_t i_dig = 0; i_dig <= l10; i_dig++) {
             uint8_t ddd = number / p10;
             number -= ddd * p10;
@@ -107,7 +99,7 @@ void decimal(DString::internal_str& buffer, T number, uint8_t decimals) {
     uint8_t ddd;
     for (uint8_t i_dig = 0; i_dig < decimals; i_dig++) {
         if (i_dig == decimals - 1) {
-            ddd = round<T>(number / p10, 0);
+            ddd = math::round<T>(number / p10, 0);
         } else {
             ddd = number / p10;
         }
@@ -119,9 +111,9 @@ void decimal(DString::internal_str& buffer, T number, uint8_t decimals) {
 
 template<class T>
 void scientific(DString::internal_str& buffer, T number, uint8_t decimals) {
-    int l10                 = log10(number);
+    int l10 = math::log10(number);
     if (l10 < 0) --l10;
-    number /= pow(10, l10);
+    number /= math::pow10<T>(l10);
     decimal<T>(buffer, number, decimals);
     buffer += 'e';
     if (l10 < 0) {
@@ -133,44 +125,23 @@ void scientific(DString::internal_str& buffer, T number, uint8_t decimals) {
     buffer += digits[l10 / 10];
     buffer += digits[l10 % 10];
 }
-#endif
 
 DString::DString(uint8_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:08b}", number));
-#else
-        binary(internal, number, 8);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:03o}", number));
-#else
-        octal(internal, number, 3, 0xff);
-#endif
+        octal(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:02x}", number));
-#else
-        hexadecimal(internal, number, 2);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -178,39 +149,19 @@ DString::DString(uint8_t number, const IntFormat& format) {
 DString::DString(uint16_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:016b}", number));
-#else
-        binary(internal, number, 16);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:06o}", number));
-#else
-        octal(internal, number, 6, 0xffff);
-#endif
+        octal(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:04x}", number));
-#else
-        hexadecimal(internal, number, 4);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -218,39 +169,19 @@ DString::DString(uint16_t number, const IntFormat& format) {
 DString::DString(uint32_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:032b}", number));
-#else
-        binary(internal, number, 32);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:012o}", number));
-#else
-        octal(internal, number, 12, 0xffffffff);
-#endif
+        octal(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:08x}", number));
-#else
-        hexadecimal(internal, number, 8);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -258,39 +189,19 @@ DString::DString(uint32_t number, const IntFormat& format) {
 DString::DString(uint64_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:064b}", number));
-#else
-        binary(internal, number, 64);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:022o}", number));
-#else
-        octal(internal, number, 22, 0xffffffffffffffff);
-#endif
+        octal(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:016x}", number));
-#else
-        hexadecimal(internal, number, 16);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -298,39 +209,19 @@ DString::DString(uint64_t number, const IntFormat& format) {
 DString::DString(int8_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:08b}", static_cast<uint8_t>(number)));
-#else
-        binary(internal, number, 8);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:03o}", static_cast<uint8_t>(number)));
-#else
-        octal(internal, number, 3, 0xff);
-#endif
+        octal<uint8_t>(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:02x}", static_cast<uint8_t>(number)));
-#else
-        hexadecimal(internal, number, 2);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -338,39 +229,19 @@ DString::DString(int8_t number, const IntFormat& format) {
 DString::DString(int16_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:016b}", static_cast<uint16_t>(number)));
-#else
-        binary(internal, number, 16);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:06o}", static_cast<uint16_t>(number)));
-#else
-        octal(internal, number, 6, 0xffff);
-#endif
+        octal<uint16_t>(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:04x}", static_cast<uint16_t>(number)));
-#else
-        hexadecimal(internal, number, 4);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -378,39 +249,19 @@ DString::DString(int16_t number, const IntFormat& format) {
 DString::DString(int32_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:032b}", static_cast<uint32_t>(number)));
-#else
-        binary(internal, number, 32);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:012o}", static_cast<uint32_t>(number)));
-#else
-        octal(internal, number, 12, 0xffffffff);
-#endif
+        octal<uint32_t>(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:08x}", static_cast<uint32_t>(number)));
-#else
-        hexadecimal(internal, number, 8);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -418,39 +269,19 @@ DString::DString(int32_t number, const IntFormat& format) {
 DString::DString(int64_t number, const IntFormat& format) {
     switch (format) {
     case IntFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Binary:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:064b}", static_cast<uint64_t>(number)));
-#else
-        binary(internal, number, 64);
-#endif
+        binary(internal, number);
         break;
     case IntFormat::Octal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:022o}", static_cast<uint64_t>(number)));
-#else
-        octal(internal, number, 22, 0xffffffffffffffff);
-#endif
+        octal<uint64_t>(internal, number);
         break;
     case IntFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:d}", number));
-#else
         decimal(internal, number);
-#endif
         break;
     case IntFormat::Hexadecimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:016x}", static_cast<uint64_t>(number)));
-#else
-        hexadecimal(internal, number, 16);
-#endif
+        hexadecimal(internal, number);
         break;
     }
 }
@@ -458,29 +289,17 @@ DString::DString(int64_t number, const IntFormat& format) {
 DString::DString(float number, const FloatFormat& format, const uint8_t decimals) {
     switch (format) {
     case FloatFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         if (log10(number) < -3) {
             scientific(internal, number, 255);
         } else {
             decimal(internal, number, 255);
         }
-#endif
         break;
     case FloatFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:." + fmt::format("{}", decimals) + "f}", number));
-#else
         decimal(internal, number, decimals);
-#endif
         break;
     case FloatFormat::Scientific:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:." + fmt::format("{}", decimals) + "e}", number));
-#else
         scientific(internal, number, decimals);
-#endif
         break;
     }
 }
@@ -488,29 +307,17 @@ DString::DString(float number, const FloatFormat& format, const uint8_t decimals
 DString::DString(double number, const FloatFormat& format, const uint8_t decimals) {
     switch (format) {
     case FloatFormat::Auto:
-#ifdef USE_FMT
-        fromStr(fmt::format("{}", number));
-#else
         if (log10(number) < -3) {
             scientific(internal, number, 255);
         } else {
             decimal(internal, number, 255);
         }
-#endif
         break;
     case FloatFormat::Decimal:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:." + fmt::format("{}", decimals) + "f}", number));
-#else
         decimal(internal, number, decimals);
-#endif
         break;
     case FloatFormat::Scientific:
-#ifdef USE_FMT
-        fromStr(fmt::format("{:." + fmt::format("{}", decimals) + "e}", number));
-#else
         scientific(internal, number, decimals);
-#endif
         break;
     }
 }
@@ -537,16 +344,7 @@ DString DString::operator/(const DString& other) const {
     return res;
 }
 
-void DString::fromStr(std::string&& str) {
-#ifdef ARDUINO
-    internal = str.c_str();
-#else
-    internal = std::move(str);
-#endif
-}
-
-
-bool DString::startsWith([[maybe_unused]] const DString& pattern) const {
+bool DString::startsWith(const DString& pattern) const {
 #ifdef ARDUINO
     return internal.startsWith(pattern.c_str());
 #else
@@ -554,7 +352,7 @@ bool DString::startsWith([[maybe_unused]] const DString& pattern) const {
 #endif
 }
 
-bool DString::endsWith([[maybe_unused]] const DString& pattern) const {
+bool DString::endsWith(const DString& pattern) const {
 #ifdef ARDUINO
     return internal.endsWith(pattern.c_str());
 #else
@@ -621,6 +419,5 @@ void DString::removeFirstLine() {
     }
     internal = substr(index + 1).c_str();
 }
-
 
 }// namespace sys::data

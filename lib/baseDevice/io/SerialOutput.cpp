@@ -14,9 +14,6 @@
 
 namespace sys::io {
 
-/// Global instance of the Serial output
-SerialOutput serialOutput;
-
 void SerialOutput::print(const sys::data::DString& str) {
 #ifdef ARDUINO
     Serial.print(str.string());

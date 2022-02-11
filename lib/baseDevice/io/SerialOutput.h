@@ -53,6 +53,5 @@ public:
 private:
 };
 
-extern SerialOutput serialOutput;
 
 }// namespace sys::io
