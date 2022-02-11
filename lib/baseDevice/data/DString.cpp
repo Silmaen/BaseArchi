@@ -8,11 +8,17 @@
 
 #include "DString.h"
 #include "math/functions.h"
-#include <iostream>
-namespace sys::data {
 
+namespace sys::data {
+/// List of digit characters
 constexpr char digits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+/**
+ * @brief Write an integer in binary format
+ * @tparam T Integer type
+ * @param buffer Where to write
+ * @param number What to write
+ */
 template<class T>
 void binary(DString::internal_str& buffer, T number) {
     uint8_t bits  = 8 * sizeof(T);
@@ -23,6 +29,12 @@ void binary(DString::internal_str& buffer, T number) {
     }
 }
 
+/**
+ * @brief Write an integer in octal format
+ * @tparam T Integer type
+ * @param buffer Where to write
+ * @param number What to write
+ */
 template<class T>
 void octal(DString::internal_str& buffer, T number) {
     constexpr uint8_t mask    = 0b111;
@@ -39,6 +51,12 @@ void octal(DString::internal_str& buffer, T number) {
     }
 }
 
+/**
+ * @brief Write an integer in hexadecimal format
+ * @tparam T Integer type
+ * @param buffer Where to write
+ * @param number What to write
+ */
 template<class T>
 void hexadecimal(DString::internal_str& buffer, T number) {
     uint8_t bits           = 2 * sizeof(T);
@@ -48,6 +66,12 @@ void hexadecimal(DString::internal_str& buffer, T number) {
     }
 }
 
+/**
+ * @brief Write an integer in decimal format
+ * @tparam T Integer type
+ * @param buffer Where to write
+ * @param number What to write
+ */
 template<class T>
 void decimal(DString::internal_str& buffer, T number) {
     if (number < 0) {
@@ -64,6 +88,13 @@ void decimal(DString::internal_str& buffer, T number) {
     }
 }
 
+/**
+ * @brief Write an float in decimal format
+ * @tparam T Integer type
+ * @param buffer Where to write
+ * @param number What to write
+ * @param decimals Amount of decimals
+ */
 template<class T>
 void decimal(DString::internal_str& buffer, T number, uint8_t decimals) {
     if (number < 0) {
@@ -109,6 +140,13 @@ void decimal(DString::internal_str& buffer, T number, uint8_t decimals) {
     }
 }
 
+/**
+ * @brief Write an float in scientific format
+ * @tparam T Integer type
+ * @param buffer Where to write
+ * @param number What to write
+ * @param decimals Amount of decimals
+ */
 template<class T>
 void scientific(DString::internal_str& buffer, T number, uint8_t decimals) {
     int l10 = math::log10(number);

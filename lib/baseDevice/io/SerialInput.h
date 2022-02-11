@@ -40,7 +40,7 @@ public:
     /**
      * @brief Destructor.
      */
-    ~SerialInput() override = default;
+    ~SerialInput() override = default;//---UNCOVER---
 
     [[nodiscard]] bool available() const override;
 

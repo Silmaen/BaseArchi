@@ -8,8 +8,12 @@
 
 #include "System.h"
 #include "io/SerialOutput.h"
-#include "time/utils.h"
+#include "io/SerialInput.h"
 #include <algorithm>
+
+#ifdef ARDUINO
+#include <Arduino.h>
+#endif
 
 namespace sys::base {
 
@@ -17,10 +21,21 @@ System::system_ptr System::instance_{nullptr};
 
 void System::setup() {
     toReset = false;
+#ifdef ARDUINO
+    Serial.begin(115200);
+#endif
 #ifdef HAS_SMART_PTR
     outputs.pushOutput(std::shared_ptr<io::Output>(new io::SerialOutput()));
+    inputs.push_back(std::shared_ptr<io::Input>(new io::SerialInput()));
 #else
     outputs.pushOutput(new io::SerialOutput());
+    inputs.push_back(new io::SerialInput());
+#endif
+    for( auto& input:inputs){
+        input->flush();
+    }
+#ifdef ESP8266
+    outputs.println("");
 #endif
 }
 

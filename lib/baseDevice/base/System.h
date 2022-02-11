@@ -31,14 +31,19 @@ public:
     System& operator=(const System&) = delete;
     System& operator=(System&&) = delete;
 
+    /// System pointer size
 #ifdef HAS_SMART_PTR
     using system_ptr = std::shared_ptr<System>;
-    using input_ptr = std::shared_ptr<io::Input>;
 #else
     using system_ptr = System*;
-    using input_ptr = io::Input*;
 #endif
 
+    /// Input pointer type
+#ifdef HAS_SMART_PTR
+    using input_ptr = std::shared_ptr<io::Input>;
+#else
+    using input_ptr  = io::Input*;
+#endif
     /**
      * @brief Destructor.
      */
@@ -81,6 +86,7 @@ public:
      * @return Pointer to the input, nullptr if not exists
      */
     io::MultiOutput::item_type getOutput(const data::DString& outputName);
+
     /**
      * @brief Initial setup
      */
@@ -108,13 +114,16 @@ private:
      */
     System() = default;
 
+    /// Instance of System
     static system_ptr instance_;
 
     /// Console outputs
     io::MultiOutput outputs;
 
+    /// List of inputs type
     using Inputs = std::vector<input_ptr>;
 
+    /// List of inputs
     Inputs inputs;
 
     /// If the device need reset
