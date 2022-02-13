@@ -9,9 +9,8 @@
 #pragma once
 #include "io/Input.h"
 #include "io/MultiOutput.h"
-#ifdef USR_STL
-#include <memory>
-#endif
+#include "Driver.h"
+#include "core/memory.h"
 /**
  * @namespace sys
  * @brief Namespace for architecture project
@@ -32,18 +31,14 @@ public:
     System& operator=(System&&) = delete;
 
     /// System pointer size
-#ifdef HAS_SMART_PTR
-    using system_ptr = std::shared_ptr<System>;
-#else
-    using system_ptr = System*;
-#endif
+    using system_ptr = core::SharedPtr<System>;
 
     /// Input pointer type
-#ifdef HAS_SMART_PTR
-    using input_ptr = std::shared_ptr<io::Input>;
-#else
-    using input_ptr  = io::Input*;
-#endif
+    using input_ptr = core::SharedPtr<io::Input>;
+
+    /// Driver pointer type
+    using driver_ptr = core::SharedPtr<Driver>;
+
     /**
      * @brief Destructor.
      */
@@ -125,6 +120,12 @@ private:
 
     /// List of inputs
     Inputs inputs;
+
+    /// List of driver's type
+    using Drivers = std::vector<driver_ptr>;
+
+    /// List of inputs
+    Drivers drivers;
 
     /// If the device need reset
     bool toReset = false;

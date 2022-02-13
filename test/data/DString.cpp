@@ -9,11 +9,6 @@
 #include "data/DString.h"
 #include "../testBase.h"
 
-#ifdef PERF_TEST
-#include <chrono>
-#include <iostream>
-#endif
-
 void DString_constructor() {
     sys::data::DString test(F("coucou"));
     TEST_ASSERT_FALSE(test.empty())
@@ -281,23 +276,4 @@ void runTests() {
     RUN_TEST(DString_Substringing);
     RUN_TEST(DString_Substringing2);
     UNITY_END();
-#ifdef PERF_TEST
-    using clock = std::chrono::high_resolution_clock;
-    auto start  = clock::now();
-    for (uint32_t num = 0; num < 10000; ++num) {
-        DString_FloatNumber();
-        DString_Int8Number();
-        DString_Int16Number();
-        DString_Int32Number();
-        DString_Int64Number();
-    }
-    auto diff = clock::now() - start;
-    std::cout << " exec time (";
-#ifdef USE_FMT
-    std::cout << " FMT) : ";
-#else
-    std::cout << " INTERNAL) : ";
-#endif
-    std::cout << std::chrono::duration_cast<std::chrono::microseconds>(diff).count()/1000.0 << " ms " << std::endl;
-#endif
 }

@@ -9,6 +9,7 @@
 #include "System.h"
 #include "io/SerialOutput.h"
 #include "io/SerialInput.h"
+#include "io/SerialDriver.h"
 #include <algorithm>
 
 #ifdef ARDUINO
@@ -21,22 +22,11 @@ System::system_ptr System::instance_{nullptr};
 
 void System::setup() {
     toReset = false;
-#ifdef ARDUINO
-    Serial.begin(115200);
-#endif
-#ifdef HAS_SMART_PTR
-    outputs.pushOutput(std::shared_ptr<io::Output>(new io::SerialOutput()));
-    inputs.push_back(std::shared_ptr<io::Input>(new io::SerialInput()));
-#else
-    outputs.pushOutput(new io::SerialOutput());
-    inputs.push_back(new io::SerialInput());
-#endif
-    for( auto& input:inputs){
-        input->flush();
+    drivers.push_back(core::SharedPtr<Driver>(new io::SerialDriver()));
+    // initialize all the drivers
+    for(auto& driver : drivers){
+        driver->setup();
     }
-#ifdef ESP8266
-    outputs.println("");
-#endif
 }
 
 void System::loop() {
@@ -46,6 +36,10 @@ void System::loop() {
             continue;
         outputs.println(input->getName() + F("> ") + input->getLine());
     }
+    // frame all the drivers
+    for(auto& driver : drivers){
+        driver->loop();
+    }
 }
 
 void System::pushOutput(const io::MultiOutput::item_type& newOutput) {
@@ -54,11 +48,7 @@ void System::pushOutput(const io::MultiOutput::item_type& newOutput) {
 
 System::system_ptr System::getInstance() {
     if (instance_ == nullptr) {
-#ifdef HAS_SMART_PTR
-        instance_ = std::shared_ptr<System>(new System());
-#else
-        instance_ = new System();
-#endif
+        instance_ = core::SharedPtr<System>(new System());
     }
     return instance_;
 }
@@ -71,14 +61,14 @@ System::input_ptr System::getInput(const data::DString& inputName) {
     auto result = std::find_if(inputs.begin(), inputs.end(),
                                [&inputName](const input_ptr& out) { return out->getName() == inputName; });
     if (result == inputs.end())
-        return nullptr;
+        return {};
     return *result;
 }
 io::MultiOutput::item_type System::getOutput(const data::DString& outputName) {
     auto result = std::find_if(outputs.begin(), outputs.end(),
                                [&outputName](const io::MultiOutput::item_type& out) { return out->getName() == outputName; });
     if (result == outputs.end())
-        return nullptr;
+        return {};
     return *result;
 }
 

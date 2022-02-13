@@ -9,7 +9,7 @@
 #pragma once
 #include "Output.h"
 #include <vector>
-#include <memory>
+#include <base/core/memory.h>
 
 namespace sys::io {
 
@@ -19,11 +19,7 @@ namespace sys::io {
 class MultiOutput: public Output {
 public:
     /// Item's type
-#ifdef HAS_SMART_PTR
-    using item_type = std::shared_ptr<Output>;
-#else
-    using item_type = Output*;
-#endif
+    using item_type = base::core::SharedPtr<Output>;
     /// List of outputs
     using Outputs = std::vector<item_type>;
     /// Iterator to outputs

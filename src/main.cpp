@@ -32,6 +32,7 @@ void loop() {
 #ifndef ARDUINO
 #include <io/StringOutput.h>
 #include <io/StringInput.h>
+
 /**
  * @brief Main entry point
  * @retval 0
@@ -39,18 +40,11 @@ void loop() {
 int main(){
     auto hardware = sys::base::System::getInstance();
     hardware->setup();
-    hardware->pushOutput(std::shared_ptr<sys::io::Output>(new sys::io::StringOutput()));
-    hardware->pushInput(std::shared_ptr<sys::io::Input>(new sys::io::StringInput()));
-    // =========
-//    auto inputTemp = hardware->getInput(0);
-//    auto input = std::static_pointer_cast<sys::io::StringInput>(inputTemp);
-
-    /*
-    setup();
-    while (!sys::base::System::getInstance()->doReset()){
-        loop();
-    }
-     */
+    // get string input
+    auto inputTemp = hardware->getInput(F("String"));
+    auto input = inputTemp.cast<sys::io::StringInput>();
+    input->pushToBuffer("coucou");
+    hardware->loop();
     return 0;
 }
 #endif
