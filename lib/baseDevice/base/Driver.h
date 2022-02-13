@@ -54,10 +54,17 @@ public:
     virtual void loop() = 0;
 
     /**
+     * @brief Treat the given command line
+     * @param cmdLine The command to parse
+     * @return True if command effectively treated
+     */
+    virtual bool treatCommand(const data::DString& cmdLine) = 0;
+
+    /**
      * @brief The specific name of the driver
      * @return Driver's name
      */
-    [[nodiscard]] virtual data::DString name() const { return F("driver"); }
+    [[nodiscard]] virtual data::DString getName() const { return F("driver"); }
 private:
 };
 

@@ -46,7 +46,9 @@ public:
 
     void loop() override{};
 
-    [[nodiscard]] data::DString name()const override {return F("serial");}
+    bool treatCommand([[maybe_unused]]const data::DString& cmdLine)override {return false;}
+
+    [[nodiscard]] data::DString getName()const override {return F("serial");}
 private:
 };
 

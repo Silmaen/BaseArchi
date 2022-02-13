@@ -9,6 +9,9 @@
 #pragma once
 #include <cstdint>
 
+/**
+ * @brief Namespace for core elements
+ */
 namespace sys::base::core {
 
 /**
@@ -66,14 +69,21 @@ public:
         return *this;
     }
 
-    /// Move constructor
+    /**
+     * @brief Move constructor
+     * @param dyingObj Origin object
+     */
     SharedPtr(SharedPtr&& dyingObj) noexcept :
         ptr(dyingObj.ptr), refCount(dyingObj.refCount) {
         dyingObj.ptr = nullptr;
         dyingObj.refCount = nullptr;
     }
 
-    /// Move assignment
+    /**
+     * @brief Move assignment
+     * @param dyingObj Origin object
+     * @return This
+     */
     SharedPtr& operator=(SharedPtr&& dyingObj) noexcept {
         ptr          = dyingObj.ptr;
         refCount     = dyingObj.refCount;
@@ -92,9 +102,15 @@ public:
         return SharedPtr<NewType>((NewType*)(ptr), refCount);
     }
 
-    /// Access operator
+    /**
+     * @brief Access operator
+     * @return Data pointer
+     */
     T* operator->() const { return ptr; }
-    /// Access operator
+    /**
+     * @brief Access operator
+     * @return Data reference
+     */
     T& operator*() const { return *ptr; }
     /**
      * @brief Get usage count

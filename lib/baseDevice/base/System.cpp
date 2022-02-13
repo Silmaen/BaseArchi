@@ -34,7 +34,15 @@ void System::loop() {
     for (auto& input : inputs) {
         if (!input->available())
             continue;
-        outputs.println(input->getName() + F("> ") + input->getLine());
+        // get first line and flush it
+        auto line = input->getLine();
+        // echo this line to outputs
+        outputs.println(input->getName() + F("> ") + line);
+        if (treatCommand(line)) {
+            // treat only one command per cycle
+            break;
+        }
+        outputs.println(F("error: Command not found"));
     }
     // frame all the drivers
     for(auto& driver : drivers){
@@ -72,4 +80,51 @@ io::MultiOutput::item_type System::getOutput(const data::DString& outputName) {
     return *result;
 }
 
+
+System::driver_ptr System::findDriver(const data::DString& drvName) {
+    auto result = std::find_if(drivers.begin(), drivers.end(),
+                               [&drvName](const driver_ptr & out) { return out->getName() == drvName; });
+    if (result == drivers.end())
+        return {};
+    return *result;
+}
+
+bool System::treatCommand(const data::DString& cmdLine) {
+    auto keyword = cmdLine.getFirstWord();
+    // the system commands
+    if (keyword == F("dmesg")){
+        printSystemInfos();
+        return true;
+    }
+    if (keyword == F("halt") || keyword == F("reboot")){
+        requestReset();
+        return true;
+    }
+    // find a driver with that name to transmit the command
+    auto driver = findDriver(keyword);
+    if (driver == nullptr) // no driver found
+        return false;
+    driver->treatCommand(cmdLine.substr(cmdLine.firstIndexOf(F(" "))));
+    return false;
+}
+
+void System::printSystemInfos() {
+    outputs.println(F("System informations"));
+#if defined(ARDUINO_AVR_MEGA2560)
+    outputs.println(F("Arduino Mega 2560"));
+#elif defined(ARDUINO_AVR_MICRO)
+    outputs.println(F("Arduino Micro"));
+#elif defined(ARDUINO_SAMD_MKRWIFI1010)
+    outputs.println(F("Arduino MKR Wifi 1010"));
+#elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
+    outputs.println(F("ESP8266 Wemos D1 mini"));
+#elif defined(NATIVE)
+    outputs.println(F("Native"));
+#else
+    outputs.println(F("Unknown platform"));
+#endif
+
+}
+
 }// namespace sys::base
+

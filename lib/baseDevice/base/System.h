@@ -104,10 +104,27 @@ public:
     void requestReset() { toReset = true; }
 
 private:
+    /// List of driver's type
+    using Drivers = std::vector<driver_ptr>;
+
+    /// List of inputs type
+    using Inputs = std::vector<input_ptr>;
+
     /**
      * @brief Default constructor.
      */
     System() = default;
+
+    /**
+     * @brief Treat the command line
+     * @param cmdLine The command line to treat
+     * @return True if the line treated
+     */
+    bool treatCommand(const data::DString& cmdLine);
+
+    void printSystemInfos();
+
+    driver_ptr findDriver(const data::DString& drvName);
 
     /// Instance of System
     static system_ptr instance_;
@@ -115,14 +132,8 @@ private:
     /// Console outputs
     io::MultiOutput outputs;
 
-    /// List of inputs type
-    using Inputs = std::vector<input_ptr>;
-
     /// List of inputs
     Inputs inputs;
-
-    /// List of driver's type
-    using Drivers = std::vector<driver_ptr>;
 
     /// List of inputs
     Drivers drivers;
