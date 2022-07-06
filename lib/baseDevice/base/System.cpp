@@ -11,10 +11,8 @@
 #include "io/SerialInput.h"
 #include "io/SerialDriver.h"
 #include <algorithm>
+#include "core/hardwareUtils.h"
 
-#ifdef ARDUINO
-#include <Arduino.h>
-#endif
 
 namespace sys::base {
 
