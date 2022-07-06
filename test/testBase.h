@@ -1,6 +1,6 @@
 /**
  * @file testBase.h
- * @author argawaen
+ * @author Silmaen
  * @date 02/02/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
