@@ -1,0 +1,29 @@
+{
+  "name": "sbs",
+  "keywords": "Base System, arduino, esp, native, platformio",
+  "description": "Silmaen Base System for arduino project",
+  "license": "GPL-3",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "version": "0.0.1",
+  "frameworks": "*",
+  "platforms": [
+    "espressif32",
+    "espressif8266",
+    "atmelavr",
+    "atmelsam",
+    "native"
+  ],
+  "export": {
+    "include": []
+  },
+  "headers": [],
+  "build": {
+    "flags": [],
+    "srcFilter": [],
+    "extraScript": ""
+  }
+}

@@ -1,0 +1,3 @@
+This is where to place the data that will be copied onto the device.
+
+using command `pio run --target uploadfs`
