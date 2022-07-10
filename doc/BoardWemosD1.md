@@ -1,10 +1,9 @@
-
-# Wemos D1 board
+## Board Wemos D1
 
 A mini wifi board with 4MB flash based on ESP-8266EX.
 In stck we have the v3.0.0.
 
-## Specifications
+### Specifications
 
 * 11 digital IO, interrupt/pwm/I2C/one-wire supported(except D0)
 * Micro USB connexion.
@@ -22,7 +21,7 @@ In stck we have the v3.0.0.
 
 [Schematics](datasheets/d1_mini_v3.0.0.pdf)
 
-## Wiring
+### Wiring
 
 All pins runs at 3.3V
 
