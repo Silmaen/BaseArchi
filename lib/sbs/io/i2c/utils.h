@@ -15,6 +15,19 @@
 namespace sbs::io::i2c {
 
 /**
+ * @brief Activate or deactivate the emulated i2c mode
+ * @param emulated the mode
+ */
+void setEmulatedMode(bool emulated);
+
+/**
+ * @brief Define the content of the emulated read buffer
+ * @param size Buffer size
+ * @param buffer Buffer content
+ */
+void setEmulatedBuffer(uint8_t size, uint8_t* buffer);
+
+/**
  * \brief \brief Write one byte at the given register
  * \param address Device's address
  * \param reg The register to read
@@ -37,6 +50,16 @@ void writeCommand(uint8_t address,  uint8_t reg, uint8_t value);
  * \return The value as signed integer
  */
 [[nodiscard]] int8_t readS8(uint8_t address, uint8_t reg);
+
+/**
+ * @brief Read bytes at the given register in the given device
+ * @param address  Device's address
+ * @param reg The starting register to read
+ * @param size The amount of byte to read
+ * @param output The read bytes
+ * @param lowFirst If true the lowest byte is get first
+ */
+void read(uint8_t address, uint8_t reg, uint8_t size, uint8_t* output, bool lowFirst = false);
 
 /**
  * \brief Read the 2 bytes at the given register in the given device

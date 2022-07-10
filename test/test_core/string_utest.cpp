@@ -10,8 +10,14 @@
 #include <core/string.h>
 
 void basic_test(){
-    sbs::string str;
-    TEST_ASSERT_EQUAL(0, str.size());
-    TEST_ASSERT(str.empty());
-
+    {
+        sbs::string str;
+        TEST_ASSERT_EQUAL(0, str.size());
+        TEST_ASSERT(str.empty());
+    }
+    {
+        sbs::string str{"foo"};
+        TEST_ASSERT_EQUAL(3, str.size());
+        TEST_ASSERT_EQUAL_STRING("foo", str.c_str());
+    }
 }

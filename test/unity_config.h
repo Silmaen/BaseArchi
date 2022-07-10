@@ -31,6 +31,7 @@ void unityOutputComplete();
 #define UNITY_OUTPUT_CHAR(c)    unityOutputChar(c)
 #define UNITY_OUTPUT_FLUSH()    unityOutputFlush()
 #define UNITY_OUTPUT_COMPLETE() unityOutputComplete()
+#define UNITY_INCLUDE_DOUBLE
 
 #ifdef __cplusplus
 }

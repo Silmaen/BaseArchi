@@ -13,6 +13,8 @@
  * @brief IO namespace
  */
 namespace sbs::io {
+
+
 /**
  * @brief Class device
  */
@@ -36,7 +38,6 @@ public:
 
     /**
      * @brief Called at all reconnection of the device
-     * @return
      */
     virtual void init() {}
 
@@ -49,7 +50,9 @@ public:
      * @brief Check for device present
      * @return True if detected
      */
-    [[nodiscard]] virtual bool checkPresence() const {return true;}
+    [[nodiscard]] virtual bool checkPresence() const {
+        return fakePresence;
+    }
 
     /**
      * @brief Action when device newly connected
@@ -81,7 +84,21 @@ public:
      * @return Device's protocol
      */
     [[nodiscard]] virtual Protocol getProtocol()const {return Protocol::Unknown;}
-private:
+
+    /**
+     * @brief Get Device's presence.
+     * @return Device's presence.
+     */
+    [[nodiscard]] const bool& presence()const{return present;}
+
+#ifndef UNIT_TEST
+    private:
+#endif
+    /// To fake presence
+    bool fakePresence = false;
+#ifdef UNIT_TEST
+    private:
+#endif
     /// If the device is detected
     bool present = false;
 };

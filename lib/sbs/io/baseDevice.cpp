@@ -5,14 +5,13 @@
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
  */
-
 #include "baseDevice.h"
 
 namespace sbs::io {
 
 void baseDevice::selfCheck() {
     bool oPresence = present;
-    present = checkPresence();
+    present        = checkPresence();
     if (oPresence == present)
         return;
     if (present) {

@@ -41,12 +41,6 @@ public:
     void init() override{};
 
     /**
-     * @brief Check for device present
-     * @return True if detected
-     */
-    [[nodiscard]] bool checkPresence() const override { return true; }
-
-    /**
      * @brief Action when device newly connected
      */
     void onConnect() override { init(); }
@@ -72,16 +66,17 @@ public:
      * @brief Access to the device address
      * @return Device's address
      */
-    [[nodiscard]] uint8_t getAddress()const{return address;}
+    [[nodiscard]] uint8_t getAddress() const { return address; }
 
     /**
      * @brief Redefine the Device's address
      * @param address The new address
      */
     void setAddress(uint8_t address);
+
 private:
     /// Address of the device
-    uint8_t address;
+    uint8_t address = 0;
 };
 
 }// namespace sbs::io::i2c

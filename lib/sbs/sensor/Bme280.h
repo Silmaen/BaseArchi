@@ -5,14 +5,13 @@
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
  */
-
 #pragma once
 #include "io/i2c/Device.h"
+
 /**
- * @brief namespace for the sensors
+ * @brief Namespace for the sensors
  */
 namespace sbs::sensor {
-
 
 /**
  * @brief Class BME280
@@ -36,10 +35,107 @@ public:
      * @brief Sensor Data
      */
     struct SensorData {
-        float Temperature;///< Atmospheric Temperature
-        float Humidity;   ///< Atmospheric Humidity
-        float Pressure;   ///< Atmospheric pressure
+        double temperature = 0.0;///< Atmospheric Temperature
+        double humidity    = 0.0;///< Atmospheric Humidity
+        double pressure    = 0.0;///< Atmospheric pressure
+        /**
+         * @brief Internal addition
+         * @param other Data to add
+         * @return updated data
+         */
+        SensorData& operator+=(const SensorData& other) {
+            temperature += other.temperature;
+            humidity += other.humidity;
+            pressure += other.pressure;
+            return *this;
+        }
+        /**
+         * @brief Internal subtract
+         * @param other Data to subtract
+         * @return updated data
+         */
+        SensorData& operator-=(const SensorData& other) {
+            temperature -= other.temperature;
+            humidity -= other.humidity;
+            pressure -= other.pressure;
+            return *this;
+        }
+        /**
+         * @brief Internal product
+         * @param other Scalar to multiply
+         * @return updated data
+         */
+        SensorData& operator*=(const double& other) {
+            temperature *= other;
+            humidity *= other;
+            pressure *= other;
+            return *this;
+        }
+        /**
+         * @brief Internal division
+         * @param other Scalar to divide
+         * @return updated data
+         */
+        SensorData& operator/=(const double& other) {
+            temperature /= other;
+            humidity /= other;
+            pressure /= other;
+            return *this;
+        }
+        /**
+         * @brief Addition
+         * @param other Data to add.
+         * @return Updated data
+         */
+        SensorData operator+(const SensorData& other) const {
+            SensorData result{*this};
+            result += other;
+            return result;
+        }
+        /**
+         * @brief Subtract
+         * @param other Data to subtract.
+         * @return Updated data
+         */
+        SensorData operator-(const SensorData& other) const {
+            SensorData result{*this};
+            result -= other;
+            return result;
+        }
+        /**
+         * @brief Product
+         * @param other constant to multipliy
+         * @return updated data
+         */
+        SensorData operator*(const double& other) const {
+            SensorData result{*this};
+            result *= other;
+            return result;
+        }
+        /**
+         * @brief Division
+         * @param other constant to divide
+         * @return updated data
+         */
+        SensorData operator/(const double& other) const {
+            SensorData result{*this};
+            result /= other;
+            return result;
+        }
+        /**
+         * @brief Get altitude based on QNH
+         * @param qnh the MSL-corrected pressure
+         * @return The sensor altitude
+         */
+        [[nodiscard]] double getAltitude(double qnh) const;
+        /**
+         * @brief Get MSL-Corrected pressure base on sensor altitude
+         * @param actualAltitude Sensor altitude
+         * @return The MSL-Corrected pressure
+         */
+        [[nodiscard]] double getQnh(double actualAltitude) const;
     };
+
     /**
      * \brief device settings
      */
@@ -79,9 +175,9 @@ public:
         };
 
         /**
-         * @brief the stand by time between two measure
+         * @brief The stand by time between two measure
          */
-        enum struct StandyByTime {
+        enum struct StandByTime {
             SBT_0_5  = 0b000,///< 0.5 ms
             SBT_62_5 = 0b001,///< 62.5 ms
             SBT_125  = 0b010,///< 125 ms
@@ -92,28 +188,53 @@ public:
             SBT_20   = 0b111,///< 20 ms
         };
 
-        WorkingMode mode                     = WorkingMode::Sleep;    ///< operating mode
-        Oversampling pressureOversampling    = Oversampling::Off;     ///< oversampling for pressure
-        Oversampling temperatureOversampling = Oversampling::Off;     ///< oversampling for temperature
-        Oversampling humidityOversampling    = Oversampling::Off;     ///< oversampling for humidity
-        StandyByTime sdTime                  = StandyByTime::SBT_0_5; ///< stand by time
-        FilterCoefficient filter             = FilterCoefficient::Off;///< filter coefficient
+        WorkingMode mode                     = WorkingMode::Sleep;    ///< Operating mode
+        Oversampling pressureOversampling    = Oversampling::Off;     ///< Oversampling for pressure
+        Oversampling temperatureOversampling = Oversampling::Off;     ///< Oversampling for temperature
+        Oversampling humidityOversampling    = Oversampling::Off;     ///< Oversampling for humidity
+        StandByTime sdTime                   = StandByTime::SBT_0_5;  ///< Stand by time
+        FilterCoefficient filter             = FilterCoefficient::Off;///< Filter coefficient
 
+        /**
+         * @brief Constructor
+         * @param m WorkingMode
+         * @param po Pressure over sampling
+         * @param to Temperature over sampling
+         * @param ho Humidity over sampling
+         * @param sdt Stand by time
+         * @param fc Filter coefficient
+         */
         constexpr Setting(const WorkingMode& m,
                           const Oversampling& po,
                           const Oversampling& to,
                           const Oversampling& ho,
-                          const StandyByTime& sdt,
+                          const StandByTime& sdt,
                           const FilterCoefficient& fc) :
             mode{m},
             pressureOversampling{po}, temperatureOversampling{to}, humidityOversampling{ho}, sdTime{sdt}, filter{fc} {}
 
+        /**
+         * @brief Convert to Humidity register
+         * @return Humidity register
+         */
         [[nodiscard]] uint8_t toCtrlHumReg() const { return static_cast<uint8_t>(humidityOversampling); }
+        /**
+         * @brief Convert to Measure register
+         * @return Measure register
+         */
         [[nodiscard]] uint8_t toCtrlMeasReg() const {
             return (static_cast<uint8_t>(temperatureOversampling) << 5U) + (static_cast<uint8_t>(pressureOversampling) << 2U) +
                    static_cast<uint8_t>(mode);
         }
+        /**
+         * @brief Convert to Config register
+         * @return Config register
+         */
         [[nodiscard]] uint8_t toConfigReg() const { return (static_cast<uint8_t>(sdTime) << 5U) + (static_cast<uint8_t>(filter) << 2U); }
+        /**
+         * @brief Get the estimated max measurement time.
+         * @return The estimated max measurement time.
+         */
         [[nodiscard]] uint16_t maxMeasurementTime() const {
             float estimation = 1.25F + (2.3F * static_cast<float>(temperatureOversampling));
             if (pressureOversampling != Oversampling::Off)
@@ -122,11 +243,140 @@ public:
                 estimation += (2.3F * static_cast<float>(humidityOversampling) + 0.575F);
             return estimation + 0.5F;
         }
+        /**
+         * @brief PREDEFINED SETTINGS as mention in the datasheet
+         */
+        enum struct PredefinedSettings {
+            /**
+         * @brief Weather monitoring set of parameters
+         *
+         *  Only 1 measure/minute is recommended
+         *  Current consumption: 0.16µA
+         *  RMS Noise: 3.3Pa/30cm, 0.07%RH
+         *  Data output rate: 1/60Hz
+         */
+            WeatherMonitor,
+            /**
+         * @brief Humidity sensing set of parameters
+         *
+         *  Only 1 measure/second is recommended, presure measurment is deactivated
+         *  Current consumption: 2.9µA
+         *  RMS Noise: 0.07%RH
+         *  Data output rate: 1Hz
+         */
+            HumiditySensing,
+            /**
+         * @brief Indoor navigation set of parameters
+         *
+         *  Current consumption: 633µA
+         *  RMS Noise: 0.2Pa/1.7cm
+         *  Data output rate: 25Hz
+         *  Filter bandwidth: 0.53Hz
+         *  Response time (75%): 0.9s
+         */
+            IndoorNavigation,
+            /**
+         * @brief Gaming set of parameters
+         *
+         *  Humidity sensor is deactivated
+         *  Current consumption: 581
+         *  RMS Noise: 0.3Pa/2.5cm
+         *  Data output rate: 83Hz
+         *  Filter bandwidth: 1.75Hz
+         *  Response time (75%): 0.3s
+         */
+            Gaming
+        };
+        /**
+         * @brief Get predefined setting
+         * @param which Which wanted profile
+         * @return The Settings.
+         */
+        static Setting getPredefined(const PredefinedSettings& which) {
+            switch (which) {
+            case PredefinedSettings::WeatherMonitor:
+                return {WorkingMode::Forced, Oversampling::O_X1, Oversampling::O_X1,
+                        Oversampling::O_X1, StandByTime::SBT_0_5, FilterCoefficient::Off};
+            case PredefinedSettings::HumiditySensing:
+                return {WorkingMode::Forced, Oversampling::Off, Oversampling::O_X1,
+                        Oversampling::O_X1, StandByTime::SBT_0_5, FilterCoefficient::Off};
+            case PredefinedSettings::IndoorNavigation:
+                return {WorkingMode::Normal, Oversampling::O_X16, Oversampling::O_X2,
+                        Oversampling::O_X1, StandByTime::SBT_0_5, FilterCoefficient::F_16};
+            case PredefinedSettings::Gaming:
+                return {WorkingMode::Normal, Oversampling::O_X4, Oversampling::O_X1,
+                        Oversampling::Off, StandByTime::SBT_0_5, FilterCoefficient::F_16};
+            }
+            return {WorkingMode::Forced, Oversampling::O_X1, Oversampling::O_X1,
+                    Oversampling::O_X1, StandByTime::SBT_0_5, FilterCoefficient::Off};
+        }
     };
 
+    /**
+     * @brief Get measured values
+     * @return The mease of the sensor
+     */
+    [[nodiscard]] const SensorData& getValue();
+
+    /**
+     * @brief Init device
+     */
+    void init() override;
+
+    /**
+     * @brief Get device's name
+     * @return The device's name.
+     */
+    [[nodiscard]] string getName() const override { return "BME280"; }
+
+    /**
+     * @brief Check the presence of the device.
+     * @return Return true if the device is found.
+     */
+    [[nodiscard]] bool checkPresence() const override;
+
+    /**
+     * @brief Make the data backup void
+     */
+    void voidData() {
+        data = SensorData{};
+    }
+
+    /**
+     * @brief Get a copy of actual settings.
+     * @return The actual settings.
+     */
+    [[nodiscard]] Setting getSetting() const { return setting; }
+
+    /**
+     * @brief Get a copy of actual settings.
+     * @param set The new settings.
+     */
+    void setSetting(const Setting& set) {
+        setting = set;
+        applySetting();
+    }
+    /**
+     * @brief Set the device in some predefined mode
+     * @param predefined The desired mode
+     */
+    void setPredefinedSettings(const Setting::PredefinedSettings& predefined) {
+        setting = Setting::getPredefined(predefined);
+        applySetting();
+    }
+
 private:
-    /// Device's settings
-    Setting settings;
+    /// Device Settings
+    Setting setting = Setting::getPredefined(Setting::PredefinedSettings::WeatherMonitor);
+
+    /// Sensor Data
+    SensorData data = SensorData{};
+
+    /**
+     * @brief Write setting into the registers.
+     */
+    void applySetting();
+
     /**
      * @brief Definition of registers constants
      */
@@ -170,28 +420,40 @@ private:
     };
 
     /**
-     * @brief Structure for handling calibration data
+     * @brief Sensor Calibration constants for compensation computation
      */
-    struct CalibrationData {
-        uint16_t T1 = 0;///< T1
-        int16_t T2  = 0;///< T2
-        int16_t T3  = 0;///< T3
-        uint16_t P1 = 0;///< P1
-        int16_t P2  = 0;///< P2
-        int16_t P3  = 0;///< P3
-        int16_t P4  = 0;///< P4
-        int16_t P5  = 0;///< P5
-        int16_t P6  = 0;///< P6
-        int16_t P7  = 0;///< P7
-        int16_t P8  = 0;///< P8
-        int16_t P9  = 0;///< P9
-        uint8_t H1  = 0;///< H1
-        int16_t H2  = 0;///< H2
-        uint8_t H3  = 0;///< H3
-        int16_t H4  = 0;///< H4
-        int16_t H5  = 0;///< H5
-        int8_t H6   = 0;///< H6
+    struct CalibrationDataDbl {
+        double T1=0; ///< T1
+        double T2=0; ///< T2
+        double T3=0; ///< T3
+        double P1=0; ///< P1
+        double P2=0; ///< P2
+        double P3=0; ///< P3
+        double P4=0; ///< P4
+        double P5=0; ///< P5
+        double P6=0; ///< P6
+        double P7=0; ///< P7
+        double P8=0; ///< P8
+        double P9=0; ///< P9
+        double H1=0; ///< H1
+        double H2=0; ///< H2
+        double H3=0; ///< H3
+        double H4=0; ///< H4
+        double H5=0; ///< H5
+        double H6=0; ///< H6
     };
+
+    CalibrationDataDbl cal;///< storage of calibration data
+
+    /**
+     * \brief read & store calibration data
+     */
+    void readCalibration();
+
+    /**
+     * @brief Get data from device and compute the compensations
+     */
+    void readAndCompensate();
 };
 
 }// namespace sbs::sensor
