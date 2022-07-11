@@ -15,37 +15,11 @@ System's requirement:
 A library at the core of the template. This contains all the abstractions required.
 
 ## Protocols
+[Protocols](doc/Protocols.md)
 
-### Hardware serial protocols
+## Boards
+[Compatible Boards](doc/Microcontrolers.md)
 
- * I2C
- * SPI
- * UART
-
-## Compatible Boards
-
-This library is only compatible with the bords I have in stock.
-
- * Atmel AVR series
-   * [Arduino MEGA 2560](doc/BoardArduinoMega.md)
-   * [Arduino micro](doc/BoardArduinoMicro.md)
- * Atmel SAM series
-   * [Arduino MKR Wifi](doc/BoardArduinoMKRWifi.md)
- * Espressif ESP8266 Series
-   * [Wemos D1 Mini](doc/BoardWemosD1.md)
-
-## Compatible Devices
-
- * Commercial boards
-   * Adafruit 10 dof
-   * Adafruit MicroSD Breakout
-   * Adafruit Ultimate GPS v3
-   * [BME280](doc/DeviceBME280.md)
-   * Chronodot v2.1
-   * nRF24L01+
-   * Seeeduino light sensor
- * Commercial shield
-   * MKR Env (for Arduino MKR boards)
- * Home-made devices
-   * LED display
+## Devices
+[Compatible Devices](doc/Devices.md)
 
