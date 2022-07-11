@@ -54,7 +54,11 @@ public:
         String(str) {}
     string(int number) :
         String(number) {}
+#ifdef ARDUINO_ARCH_SAMD
+    [[nodiscard]] bool empty() const { return length() == 0; }
+#else
     [[nodiscard]] bool empty() const { return isEmpty(); }
+#endif
     [[nodiscard]] string substr(size_type begin, size_type end) const { return substring(begin, end); }
     [[nodiscard]] string substr(size_type begin) const { return substring(begin); }
     [[nodiscard]] char back() const { return *(begin() + length() - 1); }

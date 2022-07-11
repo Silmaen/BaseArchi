@@ -26,6 +26,8 @@ void killLoop() {
 
 #ifdef ARDUINO
 
+#include <Arduino.h>
+
 void setup() {
     sbs::setup();
 }

@@ -25,18 +25,22 @@ enum struct Constant {
  * @param which Which constant to you want
  * @return The constant value
  */
-inline constexpr double getConstant(const Constant& which) {
+inline double getConstant(const Constant& which) {
+    double result = 0;
     switch (which) {
     case sbs::physic::Constant::M_AirMeanMolarMass:
-        return 0.0289644;
+        result = 0.0289644;
+        break;
     case sbs::physic::Constant::G_MeanEarthGravityAcceleration:
-        return 9.80665;
+        result = 9.80665;
+        break;
     case sbs::physic::Constant::R_PerfectGaz:
-        return 8.31446261815;
+        result = 8.31446261815;
+        break;
     case sbs::physic::Constant::T0_WaterIceTemperature:
-        return 273.15;
+        result = 273.15;
     }
-    return 0;
+    return result;
 }
 
 }// namespace sbs::physic

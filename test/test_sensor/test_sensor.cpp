@@ -7,11 +7,13 @@
  */
 #include "../test_base.h"
 #include "bme280_utest.h"
+#include "lps22hb_utest.h"
 #include "device_utest.h"
 
 int runtest(){
     UNITY_BEGIN();
     run_device();
     run_bme280();
+    run_lps22hb();
     return UNITY_END();
 }
