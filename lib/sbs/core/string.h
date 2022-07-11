@@ -54,10 +54,10 @@ public:
         String(str) {}
     string(int number) :
         String(number) {}
-#ifdef ARDUINO_ARCH_SAMD
-    [[nodiscard]] bool empty() const { return length() == 0; }
-#else
+#ifdef ESP8266
     [[nodiscard]] bool empty() const { return isEmpty(); }
+#else
+    [[nodiscard]] bool empty() const { return length() == 0; }
 #endif
     [[nodiscard]] string substr(size_type begin, size_type end) const { return substring(begin, end); }
     [[nodiscard]] string substr(size_type begin) const { return substring(begin); }

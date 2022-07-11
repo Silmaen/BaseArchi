@@ -119,14 +119,14 @@ void BME280::readAndCompensate() {
     uint8_t rawData[8];
     io::i2c::read(getAddress(), Registers::R_PRESS_MSB, 8, rawData, true);
     // Temperature Compensation
-    const int32_t rawT = ((rawData[3] << doubleByteShift) | (rawData[4] << byteShift) | rawData[5]) >> semiByteShift;
+    const int32_t rawT = ((static_cast<int32_t>(rawData[3]) << doubleByteShift) | (static_cast<int32_t>(rawData[4]) << byteShift) | static_cast<int32_t>(rawData[5])) >> semiByteShift;
     double var1        = (rawT - cal.T1);
     double var2        = var1 * var1 * cal.T3;
     auto fine       = static_cast<int32_t>(var1 * cal.T2 + var2);
     data.temperature   = (var1 * cal.T2 + var2) / 5120.0;
 
     // Pressure Compensation
-    const uint32_t rawP  = ((rawData[0] << doubleByteShift) | (rawData[1] << byteShift) | rawData[2]) >> semiByteShift;
+    const uint32_t rawP  = ((static_cast<uint32_t>(rawData[0]) << doubleByteShift) | (static_cast<uint32_t>(rawData[1]) << byteShift) | static_cast<uint32_t>(rawData[2])) >> semiByteShift;
     constexpr double P10 = 128000.0;
     var1                 = static_cast<double>(fine) - P10;
     var2                 = cal.P6 * var1 * var1 + cal.P5 * var1 + cal.P4;
@@ -139,7 +139,7 @@ void BME280::readAndCompensate() {
     }
 
     // Humidity Compensation
-    const uint32_t rawH = (rawData[6] << byteShift) | rawData[7];
+    const uint32_t rawH = (static_cast<uint32_t>(rawData[6]) << byteShift) | static_cast<uint32_t>(rawData[7]);
     constexpr double H7_ = 76800.0;
     var1                = static_cast<double>(fine) - H7_;
     var2                = cal.H2/65536.0 * (1.0 + cal.H6 / 67108864.0 * var1 * (1.0 + cal.H3 / 67108864.0 * var1));

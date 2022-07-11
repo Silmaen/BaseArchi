@@ -8,7 +8,11 @@
 
 #pragma once
 #include "../baseDevice.h"
+#ifdef ARDUINO_ARCH_AVR
+#include <stdint.h>
+#else
 #include <cstdint>
+#endif
 
 namespace sbs::io::i2c {
 

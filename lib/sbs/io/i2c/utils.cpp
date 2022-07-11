@@ -7,7 +7,10 @@
  */
 #include "utils.h"
 #include "math/base.h"
+#ifdef ARDUINO_ARCH_AVR
+#else
 #include <memory>
+#endif
 
 #ifdef ARDUINO
 #include <Wire.h>
@@ -19,15 +22,15 @@ constexpr uint8_t doubleByteShift = 16U;///< Constant to shift 2 bytes
 constexpr uint8_t tripleByteShift = 24U;///< Constant to shift 3 bytes
 
 /**
- * \brief Simple struture to emulate i2c communication
+ * \brief Simple structure to emulate i2c communication
  */
 struct emulatedWire {
-    /// if emulation active
+    /// If emulation active
     bool actived = false;
     /**
-     * @brief Define buffer size and content
-     * @param size_ buffer size
-     * @param buffer_ buffer content
+     * @brief Define buffer size and content.
+     * @param size_ Buffer size.
+     * @param buffer_ Buffer content.
      */
     void setBuffer(uint8_t size_, const uint8_t* buffer_){
         memcpy(buffer,buffer_, math::min<uint8_t>(size_,50U));
@@ -47,7 +50,7 @@ struct emulatedWire {
 private:
     /// buffer data
     uint8_t buffer[50];
-    /// cursor in the buffer
+    /// Cursor in the buffer
     uint8_t cursor = 0;
     /// buffer size
     uint8_t size = 0;

@@ -7,7 +7,11 @@
  */
 
 #pragma once
+#ifdef ARDUINO_ARCH_AVR
+#include <stdint.h>
+#else
 #include <cstdint>
+#endif
 
 /**
  * @brief Namespace for i2c devices

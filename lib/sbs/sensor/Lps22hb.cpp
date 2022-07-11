@@ -53,7 +53,7 @@ void Lps22hb::readAndCompensate() {
         rawData[hum] = io::i2c::read8(getAddress(), Registers::R_PRESS_OUT_XL+hum);
     uint32_t rawT    = rawData[3] | rawData[4] << byteShift;
     data.temperature = rawT / 100.0;
-    uint32_t rawP    = rawData[0] | rawData[1] << byteShift | rawData[2] << doubleByteShift;
+    uint32_t rawP    = static_cast<uint32_t>(rawData[0]) | static_cast<uint32_t>(rawData[1]) << byteShift | static_cast<uint32_t>(rawData[2]) << doubleByteShift;
     data.pressure    = rawP / 4096.0;
 }
 
