@@ -70,6 +70,7 @@ public:
         int index = pos - c_str();
         remove(index, 1);
     }
+    [[nodiscard]] size_type size()const{return length();}
 #else
     /**
      * @brief Constructor from char type

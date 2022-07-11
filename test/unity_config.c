@@ -36,8 +36,9 @@ extern "C"
 
 
 #include <stdio.h>
-void unityOutputStart(unsigned long) { }
-void unityOutputChar(unsigned int c) { putchar(c); }
+
+void unityOutputStart(unsigned long c) { ++c;}
+void unityOutputChar(unsigned int ccc) { putchar(ccc); }
 void unityOutputFlush(void) { fflush(stdout); }
 void unityOutputComplete(void) { }
         

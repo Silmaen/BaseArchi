@@ -1,39 +1,39 @@
 /**
- * @file Lps22hb.h
+ * @file Hts221.h
  * @author Silmean
  * @date 11/07/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
  */
+
 #pragma once
 #include "io/i2c/Device.h"
 
 namespace sbs::sensor {
-
 /**
- * @brief Class Lps22hb
+ * @brief Class Hts221
  */
-class Lps22hb : public io::i2c::Device {
+class Hts221 : public io::i2c::Device {
 public:
-    Lps22hb(const Lps22hb&)            = delete;
-    Lps22hb(Lps22hb&&)                 = delete;
-    Lps22hb& operator=(const Lps22hb&) = delete;
-    Lps22hb& operator=(Lps22hb&&)      = delete;
+    Hts221(const Hts221&)            = delete;
+    Hts221(Hts221&&)                 = delete;
+    Hts221& operator=(const Hts221&) = delete;
+    Hts221& operator=(Hts221&&)      = delete;
     /**
      * @brief Default constructor.
      */
-    Lps22hb();
+    Hts221();
     /**
      * @brief Destructor.
      */
-    ~Lps22hb() override = default;//---UNCOVER---
+    ~Hts221() override = default;
 
     /**
      * @brief Sensor Data
      */
     struct SensorData {
         double temperature = 0.0;///< Atmospheric Temperature
-        double pressure    = 0.0;///< Atmospheric pressure
+        double humidity    = 0.0;///< Atmospheric Humidity
         /**
          * @brief Internal addition
          * @param other Data to add
@@ -41,7 +41,7 @@ public:
          */
         SensorData& operator+=(const SensorData& other) {
             temperature += other.temperature;
-            pressure += other.pressure;
+            humidity += other.humidity;
             return *this;
         }
         /**
@@ -51,7 +51,7 @@ public:
          */
         SensorData& operator-=(const SensorData& other) {
             temperature -= other.temperature;
-            pressure -= other.pressure;
+            humidity -= other.humidity;
             return *this;
         }
         /**
@@ -61,7 +61,7 @@ public:
          */
         SensorData& operator*=(const double& other) {
             temperature *= other;
-            pressure *= other;
+            humidity *= other;
             return *this;
         }
         /**
@@ -71,7 +71,7 @@ public:
          */
         SensorData& operator/=(const double& other) {
             temperature /= other;
-            pressure /= other;
+            humidity /= other;
             return *this;
         }
         /**
@@ -114,18 +114,6 @@ public:
             result /= other;
             return result;
         }
-        /**
-         * @brief Get altitude based on QNH
-         * @param qnh the MSL-corrected pressure
-         * @return The sensor altitude
-         */
-        [[nodiscard]] double getAltitude(double qnh) const;
-        /**
-         * @brief Get MSL-Corrected pressure base on sensor altitude
-         * @param actualAltitude Sensor altitude
-         * @return The MSL-Corrected pressure
-         */
-        [[nodiscard]] double getQnh(double actualAltitude) const;
     };
 
     /**
@@ -143,7 +131,7 @@ public:
      * @brief Get device's name
      * @return The device's name.
      */
-    [[nodiscard]] string getName() const override { return "LPS22HB"; }
+    [[nodiscard]] string getName() const override { return "HTS221"; }
 
     /**
      * @brief Check the presence of the device.
@@ -161,30 +149,46 @@ public:
 private:
     /// Sensor Data
     SensorData data = SensorData{};
+
     /**
      * @brief Definition of registers constants
      */
     enum Registers {
-        R_THS_P_L      = 0x0C,///< LSB pressure threshold register
-        R_THS_P_H      = 0x0D,///< MSB pressure threshold register
-        R_WHOAMI       = 0x0F,///< Who am I register
-        R_CTRL1        = 0x10,///< Control1 register
-        R_CTRL2        = 0x11,///< Control2 register
-        R_CTRL3        = 0x12,///< Control3 register
-        R_REF_P_XL     = 0x15,///< XLSB reference pressure register
-        R_REF_P_L      = 0x16,///< LSB reference pressure register
-        R_REF_P_H      = 0x17,///< MSB reference pressure register
-        R_RPDS_L       = 0x18,///< LSB pressure offset register
-        R_RPDS_H       = 0x19,///< MSB pressure offset register
-        R_RES_CONF     = 0x1A,///< MSB Resolution register
-        R_STATUS       = 0x27,///< Status register
-        R_PRESS_OUT_XL = 0x28,///< XLSB Pressure read register
-        R_PRESS_OUT_L  = 0x29,///< LSB Pressure read register
-        R_PRESS_OUT_H  = 0x2A,///< MSB Pressure read register
-        R_TEMP_OUT_L   = 0x2B,///< LSB Temperature read register
-        R_TEMP_OUT_H   = 0x2C,///< MSB Temperature read register
-        R_LPFP         = 0x33,///< Filter reset register
+        R_WHOAMI             = 0x0f,///< Who am i register
+        R_CTRL1_REG          = 0x20,///< register
+        R_CTRL2_REG          = 0x21,///< register
+        R_CTRL3_REG          = 0x22,///< register
+        R_STATUS_REG         = 0x27,///< register
+        R_HUMIDITY_OUT_L_REG = 0x28,///< register
+        R_TEMP_OUT_L_REG     = 0x2a,///< register
+        R_H0_rH_x2_REG       = 0x30,///< Calibration register
+        R_H1_rH_x2_REG       = 0x31,///< Calibration register
+        R_T0_degC_x8_REG     = 0x32,///< Calibration register
+        R_T1_degC_x8_REG     = 0x33,///< Calibration register
+        R_T1_T0_MSB_REG      = 0x35,///< Calibration register
+        R_H0_T0_OUT_REG      = 0x36,///< Calibration register
+        R_H1_T0_OUT_REG      = 0x3a,///< Calibration register
+        R_T0_OUT_REG         = 0x3c,///< Calibration register
+        R_T1_OUT_REG         = 0x3e,///< Calibration register
     };
+
+    /**
+     * @brief Sensor Calibration constants for compensation computation
+     */
+    struct CalibrationDataDbl {
+        double T_Zero;
+        double T_Slope;
+        double H_Zero;
+        double H_Slope;
+    };
+
+    CalibrationDataDbl cal;///< storage of calibration data
+
+    /**
+     * \brief read & store calibration data
+     */
+    void readCalibration();
+
     /**
      * @brief Get data from device and compute the compensations
      */

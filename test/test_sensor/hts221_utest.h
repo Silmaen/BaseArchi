@@ -8,14 +8,11 @@
 #pragma once
 #include <unity.h>
 
-void lps22hb_base();
+void hts221_base();
 
-void lps22hb_emulated();
+void hts221_emulated();
 
-void lps22hb_result();
-
-void run_lps22hb(){
-    RUN_TEST(lps22hb_base);
-    RUN_TEST(lps22hb_emulated);
-    RUN_TEST(lps22hb_result);
+void run_hts221(){
+    RUN_TEST(hts221_base);
+    RUN_TEST(hts221_emulated);
 }

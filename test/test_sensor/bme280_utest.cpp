@@ -1,6 +1,6 @@
 /**
  * @file bme280_utest.cpp
- * @author argawaen
+ * @author Silmean
  * @date 08/07/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
@@ -26,8 +26,8 @@ void bme280_emulated(){
     sbs::io::i2c::setEmulatedBuffer(34, buffer);
     device.selfCheck();
     TEST_ASSERT_TRUE(device.presence());
-    uint8_t buffer2[] = {0x00,0x52,0x6C,0x00,0x84,0xF8,0x00,0x61,0x41};
-    sbs::io::i2c::setEmulatedBuffer(9, buffer2);
+    uint8_t buffer2[] = {0x01, 0x00,0x52,0x6C,0x00,0x84,0xF8,0x00,0x61,0x41};
+    sbs::io::i2c::setEmulatedBuffer(10, buffer2);
     auto data = device.getValue();
     TEST_ASSERT_DOUBLE_WITHIN(0.0001, 27.772465,data.temperature);
     TEST_ASSERT_DOUBLE_WITHIN(0.0001, 991.555407,data.pressure);
