@@ -7,6 +7,8 @@
  */
 
 #include "../sbs.h"
+#include "core/Print.h"
+
 /// If the main loop should continue
 static bool looping   = true;
 /// The return code
@@ -29,15 +31,18 @@ void killLoop() {
 #include <Arduino.h>
 
 void setup() {
+    sbs::io::logger("System Starting");
     sbs::setup();
+    sbs::io::logger("System Started");
 }
 
 void loop() {
     sbs::loop();
     if (!looping) {
         looping = true;
-        Serial.print("Return Code: ");
-        Serial.println(returnCode);
+        sbs::io::logger("Return Code: ");
+        sbs::io::logger(returnCode);
+        sbs::io::logger("\n");
         setup();
     }
 }
@@ -47,10 +52,15 @@ void loop() {
  * @return Return code
  */
 int main() {
+    sbs::io::logger("System Starting");
     sbs::setup();
+    sbs::io::logger("System Started");
     while (looping) {
         sbs::loop();
     }
+    sbs::io::logger("Return Code: ");
+    sbs::io::logger(returnCode);
+    sbs::io::logger("\n");
     return returnCode;
 }
 #endif

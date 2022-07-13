@@ -17,6 +17,36 @@
 namespace sbs::math {
 
 /**
+ * @brief Test if the value is not a number
+ * @tparam BaseType Value's type
+ * @param value Value to test
+ * @return True if the value is not a number
+ */
+template<class BaseType>
+constexpr inline bool isnan(const BaseType& value){
+#ifdef ARDUINO_ARCH_AVR
+    isnan(value);
+#else
+    return std::isnan(value);
+#endif
+}
+
+/**
+ * @brief Test if the value is infinity
+ * @tparam BaseType Value's type
+ * @param value Value to test
+ * @return True if the value is infinity
+ */
+template<class BaseType>
+constexpr inline bool isinf(const BaseType& value){
+#ifdef ARDUINO_ARCH_AVR
+    isinf(value);
+#else
+    return std::isinf(value);
+#endif
+}
+
+/**
  * @brief Logarithm
  * @tparam BaseType Value and return type
  * @param value Value to compute
