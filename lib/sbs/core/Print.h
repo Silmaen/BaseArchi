@@ -97,70 +97,73 @@ void logger(double data, uint8_t digit = 2);
 
 
 /**
- * @brief Print string as warning verbosity
+ * @brief Print end of line as log verbosity
+ */
+void loggerln();
+/**
+ * @brief Print string as log verbosity with a return line
  * @param str The string to print
  */
-void warning(const char* str);
-
+void loggerln(const char* str);
 /**
- * @brief Print string as warning verbosity
+ * @brief Print string as log verbosity with a return line
  * @param str The string to print
  */
-void warning(const string& str);
+void loggerln(const string& str);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(uint8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(uint8_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(int8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(int8_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(uint16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(uint16_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(int16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(int16_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(uint32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(uint32_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(int32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(int32_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(uint64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(uint64_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print integer as warning verbosity
+ * @brief Print integer as log verbosity with a return line
  * @param data The integer to print
  * @param format The integer format
  */
-void warning(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+void loggerln(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
 /**
- * @brief Print double as warning verbosity
+ * @brief Print double as log verbosity with a return line
  * @param data The double to print
  * @param digit The number of digits to print
  */
-void warning(double data, uint8_t digit = 2);
+void loggerln(double data, uint8_t digit = 2);
 
 /**
  * @brief Print string as error verbosity
@@ -228,6 +231,213 @@ void error(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
  */
 void error(double data, uint8_t digit = 2);
 
+/**
+ * @brief Print string as error verbosity with a return line
+ */
+void errorln();
+
+/**
+ * @brief Print string as error verbosity with a return line
+ * @param str The string to print
+ */
+void errorln(const char* str);
+
+/**
+ * @brief Print string as error verbosity with a return line
+ * @param str The string to print
+ */
+void errorln(const string& str);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(uint8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(int8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(uint16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(int16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(uint32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(int32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(uint64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as error verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void errorln(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print double as error verbosity with a return line
+ * @param data The double to print
+ * @param digit The number of digits to print
+ */
+void errorln(double data, uint8_t digit = 2);
+
+
+/**
+ * @brief Print string as warning verbosity
+ * @param str The string to print
+ */
+void warning(const char* str);
+
+/**
+ * @brief Print string as warning verbosity
+ * @param str The string to print
+ */
+void warning(const string& str);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(uint8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(int8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(uint16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(int16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(uint32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(int32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(uint64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warning(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print double as warning verbosity
+ * @param data The double to print
+ * @param digit The number of digits to print
+ */
+void warning(double data, uint8_t digit = 2);
+
+/**
+ * @brief Print end of line as warning verbosity
+ */
+void warningln();
+/**
+ * @brief Print string as warning verbosity with a return line
+ * @param str The string to print
+ */
+void warningln(const char* str);
+
+/**
+ * @brief Print string as warning verbosity with a return line
+ * @param str The string to print
+ */
+void warningln(const string& str);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(uint8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(int8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(uint16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(int16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(uint32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(int32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(uint64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as warning verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void warningln(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print double as warning verbosity with a return line
+ * @param data The double to print
+ * @param digit The number of digits to print
+ */
+void warningln(double data, uint8_t digit = 2);
 
 /**
  * @brief Print string as debug verbosity
@@ -294,6 +504,77 @@ void debug(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
  * @param digit The number of digits to print
  */
 void debug(double data, uint8_t digit = 2);
+
+
+/**
+ * @brief Print end of line as debug verbosity
+ */
+void debugln();
+/**
+ * @brief Print string as debug verbosity with a return line
+ * @param str The string to print
+ */
+void debugln(const char* str);
+
+/**
+ * @brief Print string as debug verbosity with a return line
+ * @param str The string to print
+ */
+void debugln(const string& str);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(uint8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(int8_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(uint16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(int16_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(uint32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(int32_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(uint64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print integer as debug verbosity with a return line
+ * @param data The integer to print
+ * @param format The integer format
+ */
+void debugln(int64_t data, const io::IntFormat& format = io::IntFormat::Auto);
+/**
+ * @brief Print double as debug verbosity with a return line
+ * @param data The double to print
+ * @param digit The number of digits to print
+ */
+void debugln(double data, uint8_t digit = 2);
 
 /**
  * @brief Define the global verbosity level

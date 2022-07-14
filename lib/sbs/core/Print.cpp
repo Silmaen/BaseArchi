@@ -9,7 +9,6 @@
 #include "Print.h"
 #include "math/functions.h"
 #ifdef NATIVE
-#include <cmath>
 #include <iostream>
 #else
 #include <Arduino.h>
@@ -19,7 +18,8 @@ namespace sbs::io {
  * @brief Global verbosity level
  */
 static Verbosity verbose = Verbosity::Error;
-
+/// if we should print
+static bool unmutedPrefix = true;
 /**
  * @brief Internal function to print line prefix
  * @param verbosity Message's verbosity level
@@ -28,29 +28,39 @@ static Verbosity verbose = Verbosity::Error;
 bool printPrefix(const Verbosity& verbosity) {
     if (verbose == Verbosity::Mute) return false;
     if (verbosity == Verbosity::Error) {
+        if (unmutedPrefix) {
 #ifdef NATIVE
-        std::cout << "ERROR ";
+            std::cout << "ERROR ";
 #else
-        Serial.print(F("ERROR "));
+            Serial.print(F("ERROR "));
 #endif
+            unmutedPrefix = false;
+        }
         return true;
     }
     if (verbosity == Verbosity::Warning && verbose != Verbosity::Error) {
+        if (unmutedPrefix) {
 #ifdef NATIVE
-        std::cout << "WARNING ";
+            std::cout << "WARNING ";
 #else
-        Serial.print(F("WARNING "));
+            Serial.print(F("WARNING "));
 #endif
+            unmutedPrefix = false;
+        }
         return true;
     }
     if (verbosity == Verbosity::Debug && verbose == Verbosity::Debug) {
+        if (unmutedPrefix) {
 #ifdef NATIVE
-        std::cout << "DEBUG ";
+            std::cout << "DEBUG ";
 #else
-        Serial.print(F("DEBUG "));
+            Serial.print(F("DEBUG "));
 #endif
+            unmutedPrefix = false;
+        }
         return true;
     }
+    unmutedPrefix = false;
     return verbosity == Verbosity::Mute;
 }
 
@@ -214,18 +224,18 @@ void logger(int32_t data, const IntFormat& format) { print(data, format, Verbosi
 void logger(uint64_t data, const IntFormat& format) { print(data, format, Verbosity::Mute); }
 void logger(int64_t data, const IntFormat& format) { print(data, format, Verbosity::Mute); }
 void logger(double data, uint8_t digit) { print(data, digit, Verbosity::Mute); }
-
-void warning(const char* str) { print(str, Verbosity::Warning); }
-void warning(const string& str) { print(str, Verbosity::Warning); }
-void warning(uint8_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(int8_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(uint16_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(int16_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(uint32_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(int32_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(uint64_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(int64_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
-void warning(double data, uint8_t digit) { print(data, digit, Verbosity::Warning); }
+void loggerln() {print("\n", Verbosity::Mute);unmutedPrefix = true;}
+void loggerln(const char* str) { logger(str); loggerln();}
+void loggerln(const string& str) { logger(str); loggerln();}
+void loggerln(uint8_t data, const IntFormat& format) {  logger(data, format); loggerln();}
+void loggerln(int8_t data, const IntFormat& format) {   logger(data, format); loggerln();}
+void loggerln(uint16_t data, const IntFormat& format) { logger(data, format); loggerln();}
+void loggerln(int16_t data, const IntFormat& format) {  logger(data, format); loggerln();}
+void loggerln(uint32_t data, const IntFormat& format) { logger(data, format); loggerln();}
+void loggerln(int32_t data, const IntFormat& format) {  logger(data, format); loggerln();}
+void loggerln(uint64_t data, const IntFormat& format) { logger(data, format); loggerln();}
+void loggerln(int64_t data, const IntFormat& format) {  logger(data, format); loggerln();}
+void loggerln(double data, uint8_t digit) { logger(data, digit); loggerln();}
 
 void error(const char* str) { print(str, Verbosity::Error); }
 void error(const string& str) { print(str, Verbosity::Error); }
@@ -238,6 +248,47 @@ void error(int32_t data, const IntFormat& format) { print(data, format, Verbosit
 void error(uint64_t data, const IntFormat& format) { print(data, format, Verbosity::Error); }
 void error(int64_t data, const IntFormat& format) { print(data, format, Verbosity::Error); }
 void error(double data, uint8_t digit) { print(data, digit, Verbosity::Error); }
+void errorln() {print("\n", Verbosity::Error);unmutedPrefix = true;}
+void errorln(const char* str) { error(str); errorln();}
+void errorln(const string& str) { error(str); errorln();}
+void errorln(uint8_t data, const IntFormat& format) {  error(data, format); errorln();}
+void errorln(int8_t data, const IntFormat& format) {   error(data, format); errorln();}
+void errorln(uint16_t data, const IntFormat& format) { error(data, format); errorln();}
+void errorln(int16_t data, const IntFormat& format) {  error(data, format); errorln();}
+void errorln(uint32_t data, const IntFormat& format) { error(data, format); errorln();}
+void errorln(int32_t data, const IntFormat& format) {  error(data, format); errorln();}
+void errorln(uint64_t data, const IntFormat& format) { error(data, format); errorln();}
+void errorln(int64_t data, const IntFormat& format) {  error(data, format); errorln();}
+
+void errorln(double data, uint8_t digit) {
+    error(data, digit);
+    errorln();
+}
+
+void warning(const char* str) { print(str, Verbosity::Warning); }
+void warning(const string& str) { print(str, Verbosity::Warning); }
+void warning(uint8_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(int8_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(uint16_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(int16_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(uint32_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(int32_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(uint64_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(int64_t data, const IntFormat& format) { print(data, format, Verbosity::Warning); }
+void warning(double data, uint8_t digit) { print(data, digit, Verbosity::Warning); }
+void warningln() {print("\n", Verbosity::Warning);unmutedPrefix = true;}
+void warningln(const char* str) { warning(str); warningln();}
+void warningln(const string& str) { warning(str); warningln(); }
+void warningln(uint8_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(int8_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(uint16_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(int16_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(uint32_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(int32_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(uint64_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(int64_t data, const IntFormat& format) { warning(data, format); warningln(); }
+void warningln(double data, uint8_t digit) { warning(data, digit); warningln(); }
+
 
 void debug(const char* str) { print(str, Verbosity::Debug); }
 void debug(const string& str) { print(str, Verbosity::Debug); }
@@ -250,5 +301,17 @@ void debug(int32_t data, const IntFormat& format) { print(data, format, Verbosit
 void debug(uint64_t data, const IntFormat& format) { print(data, format, Verbosity::Debug); }
 void debug(int64_t data, const IntFormat& format) { print(data, format, Verbosity::Debug); }
 void debug(double data, uint8_t digit) { print(data, digit, Verbosity::Debug); }
+void debugln() {print("\n", Verbosity::Debug);unmutedPrefix = true;}
+void debugln(const char* str) { debug(str); debugln();}
+void debugln(const string& str) { debug(str); debugln();}
+void debugln(uint8_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(int8_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(uint16_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(int16_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(uint32_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(int32_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(uint64_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(int64_t data, const IntFormat& format) { debug(data, format); debugln();}
+void debugln(double data, uint8_t digit) { debug(data, digit); debugln();}
 
 }// namespace sbs::io
