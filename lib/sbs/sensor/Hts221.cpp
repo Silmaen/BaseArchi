@@ -1,6 +1,6 @@
 /**
  * @file Hts221.cpp
- * @author Silmean
+ * @author Silmaen
  * @date 11/07/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
@@ -8,11 +8,6 @@
 
 #include "Hts221.h"
 #include "io/i2c/utils.h"
-
-#ifdef ARDUINO
-#include <Arduino.h>
-#include <Wire.h>
-#endif
 
 namespace sbs::sensor {
 constexpr uint8_t defaultAddress = 0x5F;///< Default HTS221 i2C address
@@ -43,9 +38,6 @@ const Hts221::SensorData& Hts221::getValue() {
 
 void Hts221::init() {
     Device::init();
-#ifdef ARDUINO
-    Wire.begin();
-#endif
     selfCheck();
     if (presence()) {
         readCalibration();
@@ -76,23 +68,6 @@ void Hts221::readCalibration() {
     auto t0Out = static_cast<int16_t>(io::i2c::read8(getAddress(), Registers::R_T0_OUT_REG) | static_cast<uint16_t>(io::i2c::read8(getAddress(), Registers::R_T0_OUT_REG + 1)) << byteShift);
     auto t1Out = static_cast<int16_t>(io::i2c::read8(getAddress(), Registers::R_T1_OUT_REG) | static_cast<uint16_t>(io::i2c::read8(getAddress(), Registers::R_T1_OUT_REG + 1)) << byteShift);
 
-#ifndef NATIVE
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_H0_rH_x2_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_H1_rH_x2_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T0_degC_x8_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T1_T0_MSB_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T1_degC_x8_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T1_T0_MSB_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_H0_T0_OUT_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_H0_T0_OUT_REG + 1)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_H1_T0_OUT_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_H1_T0_OUT_REG + 1)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T0_OUT_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T0_OUT_REG + 1)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T1_OUT_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_T1_OUT_REG + 1)), HEX);
-#endif
-
     // calculate slopes and 0 offset from calibration values,
     // for future calculations: value = a * X + b
 
@@ -111,12 +86,6 @@ void Hts221::readAndCompensate() {
     // read value and convert
     auto hout  = static_cast<int16_t>(io::i2c::read8(getAddress(), Registers::R_HUMIDITY_OUT_L_REG) | static_cast<uint16_t>(io::i2c::read8(getAddress(), Registers::R_HUMIDITY_OUT_L_REG + 1)) << byteShift);
     data.humidity = hout * cal.H_Slope + cal.H_Zero;
-#ifndef NATIVE
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_TEMP_OUT_L_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_TEMP_OUT_L_REG + 1)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_HUMIDITY_OUT_L_REG)), HEX);
-    Serial.println(static_cast<int>(io::i2c::read8(getAddress(), Registers::R_HUMIDITY_OUT_L_REG + 1)), HEX);
-#endif
 }
 
 

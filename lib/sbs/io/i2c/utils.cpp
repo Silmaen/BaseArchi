@@ -1,6 +1,6 @@
 /**
  * @file utils.cpp
- * @author Silmean
+ * @author Silmaen
  * @date 06/07/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.

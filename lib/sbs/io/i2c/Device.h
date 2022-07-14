@@ -42,7 +42,7 @@ public:
     /**
      * @brief Initialize the device
      */
-    void init() override{};
+    void init() override;
 
     /**
      * @brief Action when device newly connected

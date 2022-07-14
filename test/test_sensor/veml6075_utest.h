@@ -8,11 +8,14 @@
 #pragma once
 #include <unity.h>
 
-void hts221_base();
+void veml6075_base();
 
-void hts221_emulated();
+void veml6075_emulated();
 
-void run_hts221(){
-    RUN_TEST(hts221_base);
-    RUN_TEST(hts221_emulated);
+void veml6075_result();
+
+void run_veml6075(){
+    RUN_TEST(veml6075_base);
+    RUN_TEST(veml6075_emulated);
+    RUN_TEST(veml6075_result);
 }

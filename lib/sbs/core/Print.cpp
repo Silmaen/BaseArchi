@@ -118,10 +118,12 @@ const char digits[] = "0123456789ABCDEF";
 template<class T>
 void toHex(const T& data) {
     uint8_t octets  = sizeof(T) * 2;
-    uint64_t cursor = 15ULL << ((octets-1) * 4);
+    uint8_t ggg = octets-1;
+    uint64_t cursor = 15ULL << (ggg* 4);
     while (cursor != 0) {
-        printChar(digits[data & cursor]);
+        printChar(digits[(data & cursor)>>(4*ggg)]);
         cursor >>= 4;
+        --ggg;
     }
 }
 

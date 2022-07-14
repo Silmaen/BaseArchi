@@ -1,47 +1,47 @@
 /**
- * @file Hts221.h
+ * @file Veml6075.h
  * @author Silmaen
  * @date 11/07/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
  */
-
 #pragma once
 #include "io/i2c/Device.h"
 
 namespace sbs::sensor {
+
 /**
- * @brief Class Hts221
+ * @brief Class Veml6075
  */
-class Hts221 : public io::i2c::Device {
+class Veml6075 : public io::i2c::Device {
 public:
-    Hts221(const Hts221&)            = delete;
-    Hts221(Hts221&&)                 = delete;
-    Hts221& operator=(const Hts221&) = delete;
-    Hts221& operator=(Hts221&&)      = delete;
+    Veml6075(const Veml6075&)            = delete;
+    Veml6075(Veml6075&&)                 = delete;
+    Veml6075& operator=(const Veml6075&) = delete;
+    Veml6075& operator=(Veml6075&&)      = delete;
     /**
      * @brief Default constructor.
      */
-    Hts221();
+    Veml6075();
     /**
      * @brief Destructor.
      */
-    ~Hts221() override = default;
+    ~Veml6075() override = default;//---UNCOVER---
 
     /**
      * @brief Sensor Data
      */
     struct SensorData {
-        double temperature = 0.0;///< Atmospheric Temperature
-        double humidity    = 0.0;///< Atmospheric Humidity
+        double uva = 0.0;///< UV A level
+        double uvb = 0.0;///< UV B level
         /**
          * @brief Internal addition
          * @param other Data to add
          * @return updated data
          */
         SensorData& operator+=(const SensorData& other) {
-            temperature += other.temperature;
-            humidity += other.humidity;
+            uva += other.uva;
+            uvb += other.uvb;
             return *this;
         }
         /**
@@ -50,8 +50,8 @@ public:
          * @return updated data
          */
         SensorData& operator-=(const SensorData& other) {
-            temperature -= other.temperature;
-            humidity -= other.humidity;
+            uvb -= other.uvb;
+            uva -= other.uva;
             return *this;
         }
         /**
@@ -60,8 +60,8 @@ public:
          * @return updated data
          */
         SensorData& operator*=(const double& other) {
-            temperature *= other;
-            humidity *= other;
+            uvb *= other;
+            uva *= other;
             return *this;
         }
         /**
@@ -70,8 +70,8 @@ public:
          * @return updated data
          */
         SensorData& operator/=(const double& other) {
-            temperature /= other;
-            humidity /= other;
+            uvb /= other;
+            uva /= other;
             return *this;
         }
         /**
@@ -114,6 +114,11 @@ public:
             result /= other;
             return result;
         }
+        /**
+         * @brief Get te UV index
+         * @return The UV index
+         */
+        [[nodiscard]] double getUVIndex() const;
     };
 
     /**
@@ -131,7 +136,7 @@ public:
      * @brief Get device's name
      * @return The device's name.
      */
-    [[nodiscard]] string getName() const override { return "HTS221"; }
+    [[nodiscard]] string getName() const override { return "VEML6075"; }
 
     /**
      * @brief Check the presence of the device.
@@ -154,40 +159,13 @@ private:
      * @brief Definition of registers constants
      */
     enum Registers {
-        R_WHOAMI             = 0x0f,///< Who am i register
-        R_CTRL1_REG          = 0x20,///< register
-        R_CTRL2_REG          = 0x21,///< register
-        R_CTRL3_REG          = 0x22,///< register
-        R_STATUS_REG         = 0x27,///< register
-        R_HUMIDITY_OUT_L_REG = 0x28,///< register
-        R_TEMP_OUT_L_REG     = 0x2a,///< register
-        R_H0_rH_x2_REG       = 0x30,///< Calibration register
-        R_H1_rH_x2_REG       = 0x31,///< Calibration register
-        R_T0_degC_x8_REG     = 0x32,///< Calibration register
-        R_T1_degC_x8_REG     = 0x33,///< Calibration register
-        R_T1_T0_MSB_REG      = 0x35,///< Calibration register
-        R_H0_T0_OUT_REG      = 0x36,///< Calibration register
-        R_H1_T0_OUT_REG      = 0x3a,///< Calibration register
-        R_T0_OUT_REG         = 0x3c,///< Calibration register
-        R_T1_OUT_REG         = 0x3e,///< Calibration register
+        R_UV_CONF  = 0x00,
+        R_UVA_DATA = 0x07,
+        R_UVB_DATA = 0x09,
+        R_UVCOMP1  = 0x0a,
+        R_UVCOMP2  = 0x0b,
+        R_ID       = 0x0c,
     };
-
-    /**
-     * @brief Sensor Calibration constants for compensation computation
-     */
-    struct CalibrationDataDbl {
-        double T_Zero  = 0;
-        double T_Slope = 0;
-        double H_Zero  = 0;
-        double H_Slope = 0;
-    };
-
-    CalibrationDataDbl cal = CalibrationDataDbl{};///< storage of calibration data
-
-    /**
-     * \brief read & store calibration data
-     */
-    void readCalibration();
 
     /**
      * @brief Get data from device and compute the compensations

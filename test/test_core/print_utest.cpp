@@ -39,11 +39,11 @@ void logger_test() {
         sbs::io::logger(" ");
         sbs::io::logger(static_cast<uint8_t>(1));
         sbs::io::logger(static_cast<uint8_t>(1), sbs::io::IntFormat::Binary);
-        sbs::io::logger(static_cast<uint8_t>(1), sbs::io::IntFormat::Hexadecimal);
+        sbs::io::logger(static_cast<uint8_t>(0xDE), sbs::io::IntFormat::Hexadecimal);
         sbs::io::logger(" ");
         sbs::io::logger(static_cast<int8_t>(1));
         sbs::io::logger(static_cast<int8_t>(1), sbs::io::IntFormat::Binary);
-        sbs::io::logger(static_cast<int8_t>(1), sbs::io::IntFormat::Hexadecimal);
+        sbs::io::logger(static_cast<int8_t>(0x44), sbs::io::IntFormat::Hexadecimal);
         sbs::io::logger(" ");
         sbs::io::logger(static_cast<uint16_t>(1));
         sbs::io::logger(static_cast<uint16_t>(1), sbs::io::IntFormat::Binary);
@@ -70,7 +70,7 @@ void logger_test() {
         sbs::io::logger(static_cast<int64_t>(1), sbs::io::IntFormat::Hexadecimal);
         sbs::io::logger(" ");
         sbs::io::logger(1.0);
-        SBS_TEST_OUT("totototo 10000000101 10000000101 100000000000000010001 100000000000000010001 10000000000000000000000000000000100000001 10000000000000000000000000000000100000001 100000000000000000000000000000000000000000000000000000000000000010000000000000001 100000000000000000000000000000000000000000000000000000000000000010000000000000001 1.00")
+        SBS_TEST_OUT("totototo 100000001DE 10000000144 100000000000000010001 100000000000000010001 10000000000000000000000000000000100000001 10000000000000000000000000000000100000001 100000000000000000000000000000000000000000000000000000000000000010000000000000001 100000000000000000000000000000000000000000000000000000000000000010000000000000001 1.00")
         SBS_RESET_OUT
     }
 }

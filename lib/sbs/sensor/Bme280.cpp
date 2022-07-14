@@ -1,6 +1,6 @@
 /**
  * @file Bme280.cpp
- * @author Silmean
+ * @author Silmaen
  * @date 06/07/2022
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
@@ -11,10 +11,6 @@
 #include "math/base.h"
 #include "physic/conversions.h"
 #include "time/timing.h"
-
-#ifdef ARDUINO
-#include <Wire.h>
-#endif
 
 namespace sbs::sensor {
 constexpr uint8_t defaultAddress    = 0x76;   ///< Default BME280 i2C address
@@ -47,9 +43,6 @@ const BME280::SensorData& BME280::getValue() {
 
 void BME280::init() {
     Device::init();
-#ifdef ARDUINO
-    Wire.begin();
-#endif
     selfCheck();
     if (presence()) {
         readCalibration();

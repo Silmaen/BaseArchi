@@ -12,7 +12,7 @@
 /// If the main loop should continue
 static bool looping   = true;
 /// The return code
-static int returnCode = 0;
+static int32_t returnCode = 0;
 
 namespace sbs {
 
@@ -41,7 +41,7 @@ void loop() {
     if (!looping) {
         looping = true;
         sbs::io::logger("Return Code: ");
-        sbs::io::logger(returnCode);
+        sbs::io::logger(returnCode, sbs::io::IntFormat::Auto);
         sbs::io::logger("\n");
         setup();
     }
