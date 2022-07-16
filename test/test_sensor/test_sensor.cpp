@@ -11,6 +11,7 @@
 #include "device_utest.h"
 #include "hts221_utest.h"
 #include "veml6075_utest.h"
+#include "bq24195l_utest.h"
 
 int runtest(){
     UNITY_BEGIN();
@@ -19,5 +20,6 @@ int runtest(){
     run_lps22hb();
     run_hts221();
     run_veml6075();
+    run_bq24195l();
     return UNITY_END();
 }
