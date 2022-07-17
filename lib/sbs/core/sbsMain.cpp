@@ -31,9 +31,9 @@ void killLoop() {
 #include <Arduino.h>
 
 void setup() {
-    sbs::io::logger("System Starting");
+    sbs::io::loggerln("System Starting");
     sbs::setup();
-    sbs::io::logger("System Started");
+    sbs::io::loggerln("System Started");
 }
 
 void loop() {
@@ -41,8 +41,6 @@ void loop() {
     if (!looping) {
         looping = true;
         sbs::io::logger("Return Code: ");
-        sbs::io::logger(returnCode, sbs::io::IntFormat::Auto);
-        sbs::io::logger("\n");
         setup();
     }
 }
@@ -52,15 +50,14 @@ void loop() {
  * @return Return code
  */
 int main() {
-    sbs::io::logger("System Starting");
+    sbs::io::loggerln("System Starting");
     sbs::setup();
-    sbs::io::logger("System Started");
+    sbs::io::loggerln("System Started");
     while (looping) {
         sbs::loop();
     }
     sbs::io::logger("Return Code: ");
-    sbs::io::logger(returnCode);
-    sbs::io::logger("\n");
+    sbs::io::loggerln(returnCode);
     return returnCode;
 }
 #endif

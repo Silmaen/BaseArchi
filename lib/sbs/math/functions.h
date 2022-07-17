@@ -5,7 +5,6 @@
  * Copyright © 2022 All rights reserved.
  * All modification must get authorization from the author.
  */
-
 #pragma once
 
 #ifdef ARDUINO_ARCH_AVR
