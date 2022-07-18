@@ -39,7 +39,7 @@ void bq24195l_base(){
     TEST_ASSERT_EQUAL(0x9A, device.getSettings().toChargeTimerReg());
     TEST_ASSERT_EQUAL(0x03, device.getSettings().toThermalReg());
     TEST_ASSERT_EQUAL(0x4B, device.getSettings().toMiscOpReg());
-    uint8_t buffer[] = {0x23, 0};
+    uint8_t buffer[] = {0x23, 0x23};
     sbs::io::i2c::setEmulatedBuffer(2,buffer);
     device.init();
     // settings must be void except mandatory bits

@@ -451,7 +451,7 @@ public:
      */
     enum struct VBusStatus {
         unknown     = 0b00,///< unknown
-        usb         = 0b01,///< use usb power
+        usb         = 0b01,///< Use usb power
         AdapterPort = 0b10,///< Use battery
         otg         = 0b11 ///< Power usb using battery
     };
@@ -466,7 +466,7 @@ public:
     enum struct ChargeStatus {
         NotCharging       = 0b00,/// not charging
         PreCharge         = 0b01,///< Pre-charge phase
-        FastCharging      = 0b01,///< Fast charge phase
+        FastCharging      = 0b10,///< Fast charge phase
         ChargeTerminaison = 0b11 ///< Terminaison charge phase
     };
     /**

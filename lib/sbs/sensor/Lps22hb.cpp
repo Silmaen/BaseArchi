@@ -49,7 +49,7 @@ void Lps22hb::readAndCompensate() {
     uint32_t rawT    = rawData[3] | rawData[4] << byteShift;
     data.temperature = rawT / 100.0;
     uint32_t rawP    = static_cast<uint32_t>(rawData[0]) | static_cast<uint32_t>(rawData[1]) << byteShift | static_cast<uint32_t>(rawData[2]) << doubleByteShift;
-    data.pressure    = rawP / 4096.0;
+    data.pressure    = rawP / 4096.0 - pressureOffset;
 }
 
 double Lps22hb::SensorData::getAltitude(double qnh) const {

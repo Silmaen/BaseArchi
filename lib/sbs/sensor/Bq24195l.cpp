@@ -31,11 +31,11 @@ void Bq24195l::init() {
     pinMode(PMIC_IRQ_PIN, INPUT_PULLUP);
 #endif
 #endif
+    selfCheck();
     //check PMIC version
-    if (!checkPresence()) {
-        return;
+    if (presence()) {
+        ReadSettings();
     }
-    ReadSettings();
 }
 
 bool Bq24195l::checkPresence() const {

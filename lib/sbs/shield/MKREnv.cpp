@@ -10,7 +10,7 @@
 
 namespace sbs::shield {
 
-void MKREnv::Init() {
+void MKREnv::init() {
     humidityTemperature.init();
     pressureTemperature.init();
     UVSense.init();
@@ -26,6 +26,13 @@ const MKREnv::ShieldData& MKREnv::getValue() {
     data.UVa = UV.uva;
     data.UVb = UV.uvb;
     return data;
+}
+
+bool MKREnv::checkPresence() const {
+    return humidityTemperature.checkPresence() && pressureTemperature.checkPresence();
+}
+uint8_t MKREnv::checkVersion() const {
+    return UVSense.checkPresence()?1:2;
 }
 
 }// namespace sbs::shield

@@ -16,7 +16,7 @@ namespace sbs::shield {
 /**
  * @brief Class MKREnv
  */
-class MKREnv {
+class MKREnv: public io::baseDevice {
 public:
     MKREnv(const MKREnv&) = delete;
     MKREnv(MKREnv&&) = delete;
@@ -25,7 +25,7 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~MKREnv() = default;
+    ~MKREnv() override = default;
     /**
      * @brief Default constructor.
      */
@@ -46,7 +46,7 @@ public:
     /**
      * @brief Init device
      */
-    void Init();
+    void init() override;
 
     /**
      * @brief Get measured values
@@ -60,6 +60,31 @@ public:
     void voidData() {
         data = ShieldData{};
     }
+    /**
+     * @brief Get the device's protocol
+     * @return Device's protocol
+     */
+    [[nodiscard]] Protocol getProtocol()const override{return Protocol::Shield;}
+
+    /**
+     * @brief Check the version of the shield
+     * @return Version of the shield
+     *
+     * @note Only version 1 has UV sensor
+     */
+    [[nodiscard]] uint8_t checkVersion()const;
+
+    /**
+     * @brief Check for device present
+     * @return True if detected
+     */
+    [[nodiscard]] bool checkPresence() const override;
+
+    /**
+     * @brief Access to pressure sensor
+     * @return Pressure sensor
+     */
+    sensor::Lps22hb& gerPTSensor(){return pressureTemperature;}
 private:
     /// Sensor Data
     ShieldData data = ShieldData{};

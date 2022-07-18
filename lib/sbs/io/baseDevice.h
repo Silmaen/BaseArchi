@@ -73,10 +73,11 @@ public:
      * @brief List of device protocols
      */
     enum struct Protocol {
-        Unknown, /// unknown protocola
-        I2C, /// i2c protocol
+        Unknown, /// Unknown protocol
+        I2C, /// I2C protocol
         SPI, /// SPI protocol
-        Serial /// Uart protocol
+        Serial, /// UART protocol
+        Shield  /// Shield containing more than one device
     };
 
     /**

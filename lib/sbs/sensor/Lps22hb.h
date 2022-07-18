@@ -158,9 +158,21 @@ public:
         data = SensorData{};
     }
 
+    /**
+     * @brief Get the pressure offset
+     * @return The pressure offset
+     */
+    [[nodiscard]] double getPressureOffset()const{return pressureOffset;}
+    /**
+     * @brief Set the pressure offset
+     * @param newOffset Pressure offset
+     */
+    void setPressureOffset(double newOffset){pressureOffset = newOffset;}
 private:
     /// Sensor Data
     SensorData data = SensorData{};
+    /// Pressure offset for calibration
+    double pressureOffset = 0;
     /**
      * @brief Definition of registers constants
      */
