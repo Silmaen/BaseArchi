@@ -38,4 +38,12 @@ double getAltitude(double qnh, double measuredPressure, double measuredTemperatu
  */
 double computeQnh(double sensorAltitude, double measuredPressure, double measuredTemperature);
 
+/**
+ * @brief Compute the dew point
+ * @param measuredTemperature Sensor measured temperature
+ * @param measuredRelativeHumidity Sensor measured relative humidity
+ * @return Dew point temperature
+ */
+double computeDewPoint(double measuredTemperature, double measuredRelativeHumidity);
+
 }// namespace sbs::physic

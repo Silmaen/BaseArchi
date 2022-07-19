@@ -114,6 +114,11 @@ public:
             result /= other;
             return result;
         }
+        /**
+         * @brief Get the dew point
+         * @return The dew point
+         */
+        [[nodiscard]] double getDewPoint()const;
     };
 
     /**

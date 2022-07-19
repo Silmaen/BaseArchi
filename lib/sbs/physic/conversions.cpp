@@ -27,4 +27,20 @@ double computeQnh(double sensorAltitude, double measuredPressure, double measure
     return measuredPressure * math::exp(-sensorAltitude / coef / celsiusToKelvin(measuredTemperature));
 }
 
+double computeDewPoint(double measuredTemperature, double measuredRelativeHumidity) {
+    // Tr = b * alpha(T,Rh) / (a-alpha(T,Rh)
+    // alpha(T,Rh) = aT/(b+T) + ln(Rh)
+    /// cf. https://en.wikipedia.org/wiki/Dew_point
+    constexpr double a_low  = 17.966;
+    constexpr double a_high = 17.368;
+    constexpr double b_low  = 247.15;
+    constexpr double b_high = 238.88;
+    if (measuredTemperature < 0) {
+        double alpha = a_low * measuredTemperature / (b_low + measuredTemperature) + math::log(measuredRelativeHumidity / 100.0);
+        return b_low * alpha / (a_low - alpha);
+    }
+    double alpha = a_high * measuredTemperature / (b_high + measuredTemperature) + math::log(measuredRelativeHumidity / 100.0);
+    return b_high * alpha / (a_high - alpha);
+}
+
 }// namespace sbs::physic

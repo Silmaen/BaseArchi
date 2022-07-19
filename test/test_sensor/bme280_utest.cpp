@@ -74,4 +74,5 @@ void bme280_result(){
     Data result{30.0, 54.3, 986.0926125};
     TEST_ASSERT_DOUBLE_WITHIN(0.001, 1020, result.getQnh(300));
     TEST_ASSERT_DOUBLE_WITHIN(0.001, 300, result.getAltitude(1020));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 19.764215, result.getDewPoint());
 }

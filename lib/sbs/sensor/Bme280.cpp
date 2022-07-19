@@ -150,5 +150,8 @@ double BME280::SensorData::getQnh(double actualAltitude) const {
     // qnh = P * exp(µ*g*AltitudeRef / (R * T))
     return physic::computeQnh(actualAltitude, pressure, temperature);
 }
+double BME280::SensorData::getDewPoint() const {
+    return physic::computeDewPoint(temperature,humidity);
+}
 
 }// namespace sbs::sensor

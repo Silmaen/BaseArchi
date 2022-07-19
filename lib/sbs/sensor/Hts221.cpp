@@ -8,6 +8,7 @@
 
 #include "Hts221.h"
 #include "io/i2c/utils.h"
+#include "physic/conversions.h"
 
 namespace sbs::sensor {
 constexpr uint8_t defaultAddress = 0x5F;///< Default HTS221 i2C address
@@ -88,5 +89,9 @@ void Hts221::readAndCompensate() {
     data.humidity = hout * cal.H_Slope + cal.H_Zero;
 }
 
+
+double Hts221::SensorData::getDewPoint() const {
+    return physic::computeDewPoint(temperature,humidity);
+}
 
 }// namespace sbs::sensor

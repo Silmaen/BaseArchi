@@ -22,4 +22,6 @@ void basicphysic_test(){
     TEST_ASSERT_DOUBLE_WITHIN(0.0001,298.15, sbs::physic::celsiusToKelvin(25));
     TEST_ASSERT_DOUBLE_WITHIN(0.001,300,sbs::physic::getAltitude(1020,986.0926125,30));
     TEST_ASSERT_DOUBLE_WITHIN(0.001,1020,sbs::physic::computeQnh(300,986.0926125,30));
+    TEST_ASSERT_DOUBLE_WITHIN(0.1,10.5385861,sbs::physic::computeDewPoint(30,30));
+    TEST_ASSERT_DOUBLE_WITHIN(0.1,-24.328009,sbs::physic::computeDewPoint(-10,30));
 }

@@ -32,5 +32,6 @@ void hts221_emulated() {
     auto data = device.getValue();
     TEST_ASSERT_DOUBLE_WITHIN(0.0001, 31.7708877, data.temperature);
     TEST_ASSERT_DOUBLE_WITHIN(0.0001, 47.4580476, data.humidity);
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 19.221693, data.getDewPoint());
     sbs::io::i2c::setEmulatedMode(false);
 }

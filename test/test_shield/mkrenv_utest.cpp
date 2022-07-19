@@ -55,9 +55,9 @@ void mkrenv_emulated() {
     };
     sbs::io::i2c::setEmulatedBuffer(23, buffer2);
     auto data = device.getValue();
-    TEST_ASSERT_DOUBLE_WITHIN(0.0001, 29.7704439, data.Temperature);
-    TEST_ASSERT_DOUBLE_WITHIN(0.0001, 991.555176, data.Pressure);
-    TEST_ASSERT_DOUBLE_WITHIN(0.0001, 47.4580476, data.Humidity);
+    TEST_ASSERT_DOUBLE_WITHIN(0.0001, 29.7704439, data.temperature);
+    TEST_ASSERT_DOUBLE_WITHIN(0.0001, 991.555176, data.pressure);
+    TEST_ASSERT_DOUBLE_WITHIN(0.0001, 47.4580476, data.humidity);
     TEST_ASSERT_DOUBLE_WITHIN(0.0001, 247.15, data.UVa);
     TEST_ASSERT_DOUBLE_WITHIN(0.0001, 239.17, data.UVb);
     sbs::io::i2c::setEmulatedMode(false);
@@ -66,5 +66,8 @@ void mkrenv_emulated() {
 void mkrenv_result() {
     using Data = sbs::shield::MKREnv::ShieldData;
     Data result{30.0, 986.0926125, 45.3, 145.0, 123.0, 210.0};
-    TEST_ASSERT_DOUBLE_WITHIN(0.001, 45.3, result.Humidity);
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 45.3, result.humidity);
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 1020, result.getQnh(300));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 300, result.getAltitude(1020));
+    TEST_ASSERT_DOUBLE_WITHIN(0.001, 16.8748892, result.getDewPoint());
 }

@@ -34,13 +34,13 @@ void sbs::loop() {
     auto data_e = ENV.getValue();
     {
         sbs::io::logger(" ENV: T=");
-        sbs::io::logger(data_e.Temperature);
+        sbs::io::logger(data_e.temperature);
         sbs::io::logger(" P=");
-        sbs::io::logger(data_e.Pressure);
+        sbs::io::logger(data_e.pressure);
         sbs::io::logger(" QNH=");
-        sbs::io::logger(sbs::physic::computeQnh(295, data_e.Pressure, data_e.Temperature));
+        sbs::io::logger(sbs::physic::computeQnh(295, data_e.pressure, data_e.temperature));
         sbs::io::logger(" H=");
-        sbs::io::logger(data_e.Humidity);
+        sbs::io::logger(data_e.humidity);
     }
     auto data_b = bme.getValue();
     {
@@ -56,13 +56,13 @@ void sbs::loop() {
     }
     {
         sbs::io::logger(" Delta: T=");
-        sbs::io::logger(data_e.Temperature - data_b.temperature);
+        sbs::io::logger(data_e.temperature - data_b.temperature);
         sbs::io::logger(" P=");
-        sbs::io::logger(data_e.Pressure - data_b.pressure);
+        sbs::io::logger(data_e.pressure - data_b.pressure);
         sbs::io::logger(" QNH=");
-        sbs::io::logger(sbs::physic::computeQnh(295, data_e.Pressure, data_e.Temperature) - sbs::physic::computeQnh(295, data_b.pressure, data_b.temperature));
+        sbs::io::logger(sbs::physic::computeQnh(295, data_e.pressure, data_e.temperature) - sbs::physic::computeQnh(295, data_b.pressure, data_b.temperature));
         sbs::io::logger(" H=");
-        sbs::io::loggerln(data_e.Humidity - data_b.humidity);
+        sbs::io::loggerln(data_e.humidity - data_b.humidity);
     }
     // power management
     if (false){

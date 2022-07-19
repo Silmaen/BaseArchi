@@ -35,12 +35,29 @@ public:
      * @brief The Data coming from sensor
      */
     struct ShieldData {
-        double Temperature; ///< Actual temperature
-        double Pressure; ///< Atmospheric pressure
-        double Humidity; ///< Atmospheric relative humidity
+        double temperature; ///< Actual temperature
+        double pressure; ///< Atmospheric pressure
+        double humidity; ///< Atmospheric relative humidity
         double UVa; ///< Amount of UV-A
         double UVb; ///< Amount of UV-B
-        double Illuminance; ///< Global illuminance
+        double illuminance; ///< Global illuminance
+        /**
+         * @brief Get altitude based on QNH
+         * @param qnh the MSL-corrected pressure
+         * @return The sensor altitude
+         */
+        [[nodiscard]] double getAltitude(double qnh) const;
+        /**
+         * @brief Get MSL-Corrected pressure base on sensor altitude
+         * @param actualAltitude Sensor altitude
+         * @return The MSL-Corrected pressure
+         */
+        [[nodiscard]] double getQnh(double actualAltitude) const;
+        /**
+         * @brief Get the dew point
+         * @return The dew point
+         */
+        [[nodiscard]] double getDewPoint()const;
     };
 
     /**
