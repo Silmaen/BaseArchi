@@ -549,6 +549,10 @@ public:
      * @brief Apply current setting to device
      */
     void ApplySettings();
+
+
+    [[nodiscard]] uint8_t readSystemStatusRegister() const;
+    [[nodiscard]] uint8_t readFaultRegister() const;
 private:
     /// Setting, initialize as Constructor default
     Settings settings = Settings{};
@@ -674,8 +678,6 @@ private:
      * @return The version register
      */
     [[nodiscard]] uint8_t getVersion() const;
-    [[nodiscard]] uint8_t readSystemStatusRegister() const;
-    [[nodiscard]] uint8_t readFaultRegister() const;
 };
 
 }// namespace sbs::sensor
