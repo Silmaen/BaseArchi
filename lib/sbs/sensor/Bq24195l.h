@@ -550,8 +550,15 @@ public:
      */
     void ApplySettings();
 
-
+    /**
+     * @brief Get direct read access to status register
+     * @return The status register
+     */
     [[nodiscard]] uint8_t readSystemStatusRegister() const;
+    /**
+     * @brief Get direct read access to fault register
+     * @return The fault register
+     */
     [[nodiscard]] uint8_t readFaultRegister() const;
 private:
     /// Setting, initialize as Constructor default

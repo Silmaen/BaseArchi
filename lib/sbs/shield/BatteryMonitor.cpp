@@ -22,6 +22,10 @@ ADC_MODE(ADC_VCC);
 
 namespace sbs::shield {
 
+/**
+ * @brief Read input voltage depending on the base architecture
+ * @return The input voltage
+ */
 inline double readVcc() {
 #ifdef ARDUINO_ARCH_AVR
     int32_t result;
