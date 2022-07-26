@@ -123,5 +123,5 @@ void sbs::loop() {
             sbs::io::loggerln(PowerManager.isPowerGood() ? " Good power" : "Bad power");
         }
     }
-    sbs::time::delay(1000);
+    sbs::time::delay(10000);
 }

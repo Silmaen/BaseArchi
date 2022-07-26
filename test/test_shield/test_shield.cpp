@@ -7,9 +7,11 @@
  */
 #include "../test_base.h"
 #include "mkrenv_utest.h"
+#include "batteryMonitor_utest.h"
 
 int runtest(){
     UNITY_BEGIN();
     run_mkrenv();
+    run_battmot();
     return UNITY_END();
 }
