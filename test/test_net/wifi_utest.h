@@ -9,10 +9,8 @@
 #pragma once
 #include <unity.h>
 
-void ipAddress_test();
-void macAddress_test();
+void wifi_base_test();
 
-void run_address(){
-    RUN_TEST(ipAddress_test);
-    RUN_TEST(macAddress_test);
+void run_wifi(){
+    RUN_TEST(wifi_base_test);
 }

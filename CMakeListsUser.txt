@@ -19,6 +19,8 @@ if (DOXYGEN_FOUND)
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             COMMENT "Generating API documentation"
             VERBATIM)
+    add_custom_command(TARGET documentation POST_BUILD
+            COMMAND echo \"look at the result: file:///${CMAKE_CURRENT_BINARY_DIR}/Documentation/html/index.html\")
 else (DOXYGEN_FOUND)
     message(ERROR no doxygen found)
 endif (DOXYGEN_FOUND)
@@ -63,4 +65,6 @@ if ( "${CMAKE_BUILD_TYPE}" STREQUAL "native" )
             COMMAND ${GCOVR} ${COVERAGE_OPTION} -r ${CMAKE_CURRENT_SOURCE_DIR} -o ${COVERAGE_RESULT_DIR}/index.html ${COVERAGE_HTML} ${COVERAGE_FILTER} .
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
             USES_TERMINAL)
+    add_custom_command(TARGET Generate_test_coverage_report POST_BUILD
+            COMMAND echo \"look at the result: file:///${COVERAGE_RESULT_DIR}/index.html\")
 endif()

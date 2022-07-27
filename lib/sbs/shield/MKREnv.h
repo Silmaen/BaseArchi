@@ -11,6 +11,9 @@
 #include "sensor/Lps22hb.h"
 #include "sensor/Veml6075.h"
 
+/**
+ * @brief Namespace for Shield (i.e. set of devices)
+ */
 namespace sbs::shield {
 
 /**

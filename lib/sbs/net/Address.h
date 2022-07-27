@@ -8,6 +8,9 @@
 #pragma once
 #include "core/string.h"
 
+/**
+ * @brief Namespace for network operations
+ */
 namespace sbs::net {
 
 /**

@@ -7,10 +7,11 @@
  */
 #include "../test_base.h"
 #include "address_utest.h"
+#include "wifi_utest.h"
 
 int runtest(){
     UNITY_BEGIN();
-    RUN_TEST(ipAddress_test);
-    RUN_TEST(macAddress_test);
+    run_address();
+    run_wifi();
     return UNITY_END();
 }
